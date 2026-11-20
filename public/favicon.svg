@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0d0e0d"/>
+  <!-- 复古极简 CRT 显像管外框 (O) + 居中竖标 (1) + 复古红电源点 -->
+  <rect x="9" y="13" width="46" height="38" rx="9" fill="none" stroke="#ece9e1" stroke-width="4.5"/>
+  <rect x="29.5" y="22" width="5" height="20" rx="1.5" fill="#ece9e1"/>
+  <circle cx="44" cy="24" r="3.4" fill="#ff4d3d"/>
+</svg>

@@ -1,0 +1,670 @@
+---
+import CrtLayout from '@/layouts/CrtLayout.astro';
+import { IDENTITY } from '@/data/profile';
+
+// 第一层级（最大字号）：本站核心实现技术
+const SITE_TECH_NODES = [
+  { text: 'ASTRO 5', prefix: 'SYS://', x: 50, y: 12, mobX: 50, mobY: 9, rot: -3, depth: 1.4, accent: '#fcf8ef' },
+  { text: 'TYPESCRIPT', prefix: 'BIN://', x: 17, y: 27, mobX: 24, mobY: 22, rot: -15, depth: 1.25, accent: '#daff78' },
+  { text: 'TAILWIND V4', prefix: 'CSS://', x: 83, y: 28, mobX: 76, mobY: 22, rot: 14, depth: 1.3, accent: '#22d3ee' },
+  { text: 'NATIVE SVG', prefix: 'GFX://', x: 50, y: 88, mobX: 50, mobY: 91, rot: 2, depth: 1.35, accent: '#e5b92a' },
+];
+
+// 第二层级（较大字号）：四个项目与实验入口（可点击直达）
+const PROJECT_NODES = [
+  { text: 'OrbitSpace', tag: '01', href: '/projects/orbitspace', x: 22, y: 54, mobX: 23, mobY: 36, rot: -11, depth: 1.05, accent: '#daff78' },
+  { text: 'Anvil', tag: '02', href: '/projects/anvil', x: 79, y: 53, mobX: 77, mobY: 36, rot: 10, depth: 1.05, accent: '#22d3ee' },
+  { text: 'Dropdrop', tag: '03', href: '/projects/dropdrop', x: 26, y: 77, mobX: 24, mobY: 67, rot: -7, depth: 1.15, accent: '#ff4d3d' },
+  { text: 'LAB', tag: '04', href: '/lab', x: 74, y: 76, mobX: 76, mobY: 67, rot: 8, depth: 1.15, accent: '#c084fc' },
+];
+
+// 第三层级（漂浮命令行高亮字符串）：个人技术栈与极客终端乱码感
+const CLI_STACK_STREAMS = [
+  { text: '0x01::JAVA_21 // SPRING_BOOT', x: 27, y: 13, mobX: 25, mobY: 15, rot: -8, depth: 0.8, tone: '#daff78' },
+  { text: '0x02::RUST // TOKIO // RATATUI', x: 74, y: 14, mobX: 75, mobY: 15, rot: 9, depth: 0.85, tone: '#22d3ee' },
+  { text: '0x03::REACT // VUE_3 // YJS', x: 10, y: 42, mobX: 18, mobY: 44, rot: -18, depth: 0.75, tone: '#ece9e1' },
+  { text: '0x04::MYSQL // REDIS_STREAMS', x: 90, y: 41, mobX: 82, mobY: 44, rot: 17, depth: 0.75, tone: '#daff78' },
+  { text: '0x05::FASTIFY // NODE_JS // PYTHON', x: 11, y: 66, mobX: 21, mobY: 58, rot: 12, depth: 0.9, tone: '#ff4d3d' },
+  { text: '0x06::SQLITE_WAL // MINIO', x: 89, y: 65, mobX: 79, mobY: 58, rot: -13, depth: 0.9, tone: '#22d3ee' },
+  { text: '0x07::AES-256-GCM // RFC_8628', x: 17, y: 89, mobX: 25, mobY: 83, rot: -5, depth: 0.7, tone: '#c084fc' },
+  { text: '0x08::WEB_WORKER // PLAYWRIGHT', x: 82, y: 89, mobX: 75, mobY: 83, rot: 6, depth: 0.7, tone: '#ece9e1' },
+  { text: '0x09::DOCKER // WEBSOCKET', x: 36, y: 29, mobX: 30, mobY: 29, rot: -5, depth: 0.65, tone: '#e5b92a' },
+  { text: '0x0A::CANVAS_2D // AUDIO', x: 64, y: 29, mobX: 70, mobY: 29, rot: 5, depth: 0.65, tone: '#c084fc' },
+  { text: '0x0B::BOLLARD // ZEROIZE', x: 40, y: 73, mobX: 31, mobY: 75, rot: 4, depth: 0.6, tone: '#22d3ee' },
+  { text: '0x0C::OUTBOX // HMAC', x: 60, y: 73, mobX: 69, mobY: 75, rot: -4, depth: 0.6, tone: '#ff4d3d' },
+];
+---
+
+<CrtLayout
+  title="Oneadto"
+  activeNav="profile"
+  deskMode={true}
+  defaultBranch="关于"
+  defaultBranchColor="#ece9e1"
+  defaultCaptionTop=""
+  defaultCaptionMain="Oneadto"
+>
+  <section
+    id="profile-constellation"
+    class="constellation-stage relative flex-1 w-full max-w-[1360px] mx-auto overflow-hidden select-none"
+    aria-label="Oneadto 关于与技术矩阵"
+  >
+    <!-- 背景极淡环形扫描准线与坐标十字 -->
+    <div class="radar-rings" aria-hidden="true">
+      <div class="radar-ring ring-outer"></div>
+      <div class="radar-ring ring-mid"></div>
+      <div class="radar-ring ring-inner"></div>
+      <div class="radar-axis-h"></div>
+      <div class="radar-axis-v"></div>
+    </div>
+
+    <!-- =========================================================
+         全端统一（桌面端 + 移动端）：环绕星云 + 极客命令行乱码解码场
+         ========================================================= -->
+    <div class="relative w-full h-full" id="orbit-field">
+      <!-- 第三层级：漂浮的命令行高亮字符技术栈 -->
+      {
+        CLI_STACK_STREAMS.map((item, idx) => (
+          <div
+            class="orbit-item cli-stream"
+            data-scramble={item.text}
+            data-depth={item.depth}
+            style={`--x: ${item.x}%; --y: ${item.y}%; --mob-x: ${item.mobX}%; --mob-y: ${item.mobY}%; --rot: ${item.rot}deg; --tone: ${item.tone}; --float-dur: ${6.4 + (idx % 5) * 1.1}s; --float-delay: ${-idx * 0.6}s;`}
+          >
+            <span class="cli-prompt" aria-hidden="true">&gt;_</span>
+            <span class="scramble-text">{item.text}</span>
+          </div>
+        ))
+      }
+
+      <!-- 第二层级（较大字号）：4 个可点击项目名 -->
+      {
+        PROJECT_NODES.map((proj, idx) => (
+          <a
+            href={proj.href}
+            class="orbit-item project-node no-underline"
+            data-scramble={proj.text}
+            data-depth={proj.depth}
+            style={`--x: ${proj.x}%; --y: ${proj.y}%; --mob-x: ${proj.mobX}%; --mob-y: ${proj.mobY}%; --rot: ${proj.rot}deg; --accent: ${proj.accent}; --float-dur: ${7.2 + idx * 0.9}s; --float-delay: ${-idx * 1.1}s;`}
+          >
+            <span class="project-node-idx font-pixel">{proj.tag}</span>
+            <span class="project-node-title scramble-text">{proj.text}</span>
+            <span class="project-node-arrow" aria-hidden="true">↗</span>
+          </a>
+        ))
+      }
+
+      <!-- 第一层级（最大字号）：本站实现技术 -->
+      {
+        SITE_TECH_NODES.map((tech, idx) => (
+          <div
+            class="orbit-item site-tech-node"
+            data-scramble={tech.text}
+            data-depth={tech.depth}
+            style={`--x: ${tech.x}%; --y: ${tech.y}%; --mob-x: ${tech.mobX}%; --mob-y: ${tech.mobY}%; --rot: ${tech.rot}deg; --accent: ${tech.accent}; --float-dur: ${8 + idx * 0.8}s; --float-delay: ${-idx * 0.9}s;`}
+          >
+            <span class="site-tech-prefix">{tech.prefix}</span>
+            <span class="site-tech-word scramble-text">{tech.text}</span>
+          </div>
+        ))
+      }
+
+      <!-- 核心居中锚点：Oneadto -->
+      <div class="center-core" data-depth="0.25">
+        <div class="core-status font-mono-hud">
+          <span class="core-cursor" aria-hidden="true"></span>
+          <span id="core-hex-stream">0x7F · READY</span>
+        </div>
+
+        <h1 class="core-brand font-display-serif phosphor-text" data-scramble={IDENTITY.brand}>
+          <span class="scramble-text">{IDENTITY.brand}</span>
+        </h1>
+
+        <p class="core-sub">
+          <a
+            href={IDENTITY.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="vcr-link text-inherit hover:text-[#fcf8ef]"
+          >
+            {IDENTITY.githubDisplay}
+          </a>
+        </p>
+
+        <div class="core-actions">
+          <a href="/" class="core-btn">
+            回到主机插卡 →
+          </a>
+          <a href={`mailto:${IDENTITY.email}`} class="core-email vcr-link">
+            {IDENTITY.email}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</CrtLayout>
+
+<script>
+  import { playSound } from '@/lib/sound';
+
+  const GLYPHS = '01#$_/\\[]{}<>|=+*~^%@░▒▓';
+
+  function scrambleDecode(el: HTMLElement, durationMs = 460) {
+    const target = el.dataset.scramble;
+    const textEl = el.querySelector<HTMLElement>('.scramble-text') || el;
+    if (!target) return;
+
+    const totalFrames = Math.max(8, Math.round(durationMs / 30));
+    let frame = 0;
+
+    // 避免同一元素并发乱码定时器打架
+    const prevId = Number(el.dataset.scrambleTimer || 0);
+    if (prevId) window.clearInterval(prevId);
+
+    el.classList.add('is-glitching');
+
+    const timer = window.setInterval(() => {
+      frame += 1;
+      const progress = frame / totalFrames;
+      const revealCount = Math.floor(progress * target.length);
+      let out = '';
+
+      for (let i = 0; i < target.length; i++) {
+        const ch = target[i];
+        if (ch === ' ' || i < revealCount) {
+          out += ch;
+        } else {
+          out += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+        }
+      }
+
+      textEl.textContent = out;
+
+      if (frame >= totalFrames) {
+        window.clearInterval(timer);
+        textEl.textContent = target;
+        el.dataset.scrambleTimer = '';
+        el.classList.remove('is-glitching');
+      }
+    }, 30);
+
+    el.dataset.scrambleTimer = String(timer);
+  }
+
+  function initProfileConstellation() {
+    const stage = document.getElementById('profile-constellation');
+    if (!stage) return;
+
+    const cleanups: Array<() => void> = [];
+    const timers: number[] = [];
+    const scrambleNodes = Array.from(stage.querySelectorAll<HTMLElement>('[data-scramble]'));
+
+    // 1. 进场错峰解码动画（终端开机刷屏感）
+    scrambleNodes.forEach((node, idx) => {
+      const t = window.setTimeout(() => {
+        scrambleDecode(node, 360 + (idx % 4) * 75);
+      }, 45 + idx * 38);
+      timers.push(t);
+
+      const onTrigger = () => {
+        playSound('glitch');
+        scrambleDecode(node, 300);
+      };
+      node.addEventListener('mouseenter', onTrigger);
+      node.addEventListener('pointerdown', onTrigger);
+      cleanups.push(() => {
+        node.removeEventListener('mouseenter', onTrigger);
+        node.removeEventListener('pointerdown', onTrigger);
+      });
+    });
+
+    // 2. 低频随机命令行跳动（营造活着的极客终端乱码感）
+    const cliStreams = Array.from(stage.querySelectorAll<HTMLElement>('.cli-stream'));
+    const hexEl = document.getElementById('core-hex-stream');
+    const ambientTimer = window.setInterval(() => {
+      if (cliStreams.length > 0) {
+        const pick = cliStreams[Math.floor(Math.random() * cliStreams.length)];
+        scrambleDecode(pick, 340);
+      }
+      if (hexEl) {
+        const hex = Math.floor(Math.random() * 0xffff)
+          .toString(16)
+          .toUpperCase()
+          .padStart(4, '0');
+        hexEl.textContent = `0x${hex} · SIGNAL`;
+      }
+    }, 1650);
+    cleanups.push(() => window.clearInterval(ambientTimer));
+
+    // 3. 鼠标微视差（单一 rAF 更新 CSS 变量，零重排）
+    const orbitField = document.getElementById('orbit-field');
+    let targetX = 0;
+    let targetY = 0;
+    let curX = 0;
+    let curY = 0;
+    let rafId = 0;
+
+    const tickParallax = () => {
+      curX += (targetX - curX) * 0.1;
+      curY += (targetY - curY) * 0.1;
+      if (orbitField) {
+        orbitField.style.setProperty('--mx', `${curX.toFixed(2)}px`);
+        orbitField.style.setProperty('--my', `${curY.toFixed(2)}px`);
+      }
+      if (Math.abs(targetX - curX) > 0.05 || Math.abs(targetY - curY) > 0.05) {
+        rafId = window.requestAnimationFrame(tickParallax);
+      } else {
+        rafId = 0;
+      }
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      const rect = stage.getBoundingClientRect();
+      const nx = (e.clientX - rect.left) / Math.max(1, rect.width) - 0.5;
+      const ny = (e.clientY - rect.top) / Math.max(1, rect.height) - 0.5;
+      targetX = nx * -26;
+      targetY = ny * -18;
+      if (!rafId) rafId = window.requestAnimationFrame(tickParallax);
+    };
+
+    stage.addEventListener('pointermove', onPointerMove, { passive: true });
+    cleanups.push(() => {
+      stage.removeEventListener('pointermove', onPointerMove);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    });
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        timers.forEach((t) => window.clearTimeout(t));
+        scrambleNodes.forEach((n) => {
+          const id = Number(n.dataset.scrambleTimer || 0);
+          if (id) window.clearInterval(id);
+        });
+        cleanups.forEach((fn) => fn());
+      },
+      { once: true }
+    );
+  }
+
+  document.addEventListener('astro:page-load', initProfileConstellation);
+</script>
+
+<style>
+  .constellation-stage {
+    min-height: 0;
+    height: 100%;
+    --mx: 0px;
+    --my: 0px;
+  }
+
+  /* 背景星环与准线 */
+  .radar-rings {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .radar-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px dashed rgba(236, 233, 225, 0.08);
+  }
+
+  .ring-outer {
+    width: min(84vw, 960px);
+    height: min(84vw, 960px);
+  }
+
+  .ring-mid {
+    width: min(58vw, 660px);
+    height: min(58vw, 660px);
+    border-style: solid;
+    border-color: rgba(236, 233, 225, 0.06);
+  }
+
+  .ring-inner {
+    width: min(32vw, 360px);
+    height: min(32vw, 360px);
+    border-color: rgba(218, 255, 120, 0.1);
+  }
+
+  .radar-axis-h,
+  .radar-axis-v {
+    position: absolute;
+    background: rgba(236, 233, 225, 0.05);
+  }
+
+  .radar-axis-h {
+    left: 6%;
+    right: 6%;
+    top: 50%;
+    height: 1px;
+  }
+
+  .radar-axis-v {
+    top: 6%;
+    bottom: 6%;
+    left: 50%;
+    width: 1px;
+  }
+
+  /* 通用轨道漂浮项 */
+  .orbit-item {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate3d(
+        calc(-50% + var(--mx, 0px) * var(--depth-factor, 1)),
+        calc(-50% + var(--my, 0px) * var(--depth-factor, 1)),
+        0
+      )
+      rotate(var(--rot, 0deg));
+    animation: gentle-drift var(--float-dur, 7.5s) ease-in-out var(--float-delay, 0s) infinite;
+    will-change: transform;
+  }
+
+  @keyframes gentle-drift {
+    0%,
+    100% {
+      margin-top: 0px;
+    }
+    50% {
+      margin-top: -7px;
+    }
+  }
+
+  /* =========================================================
+     第一层级（最大字号）：本站实现技术
+     ========================================================= */
+  .site-tech-node {
+    --depth-factor: 1.3;
+    z-index: 16;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    background: rgba(16, 18, 17, 0.86);
+    border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.65),
+      0 0 22px color-mix(in srgb, var(--accent) 18%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    cursor: default;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .site-tech-node:hover,
+  .site-tech-node.is-glitching {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, #111111);
+    box-shadow:
+      0 16px 36px rgba(0, 0, 0, 0.72),
+      0 0 28px color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+
+  .site-tech-prefix {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    color: var(--accent);
+    opacity: 0.72;
+  }
+
+  .site-tech-word {
+    font-family: var(--font-mono);
+    font-size: clamp(24px, 2.55vw, 38px);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--accent);
+    text-shadow:
+      0 0 14px color-mix(in srgb, var(--accent) 45%, transparent),
+      -1px 0 rgba(255, 40, 70, 0.45),
+      1px 0 rgba(40, 150, 255, 0.45);
+  }
+
+  /* =========================================================
+     第二层级（较大字号）：4 个项目名称（可点击跳转）
+     ========================================================= */
+  .project-node {
+    --depth-factor: 1.05;
+    z-index: 18;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 14px;
+    border-radius: 4px;
+    background: rgba(19, 21, 20, 0.9);
+    border: 1px solid color-mix(in srgb, var(--accent) 42%, rgba(236, 233, 225, 0.16));
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.58);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .project-node:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 16%, #131514);
+    box-shadow:
+      0 14px 30px rgba(0, 0, 0, 0.72),
+      0 0 20px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  .project-node-idx {
+    font-size: 10px;
+    color: var(--accent);
+    padding: 2px 5px;
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: 2px;
+  }
+
+  .project-node-title {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1;
+    color: #fcf8ef;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  .project-node-arrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    opacity: 0.78;
+  }
+
+  /* =========================================================
+     第三层级：极客命令行高亮字符流
+     ========================================================= */
+  .cli-stream {
+    --depth-factor: 0.75;
+    z-index: 12;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: clamp(10.5px, 0.85vw, 12px);
+    letter-spacing: 0.06em;
+    color: color-mix(in srgb, var(--tone) 82%, #ece9e1);
+    background: rgba(17, 19, 18, 0.74);
+    border: 1px solid color-mix(in srgb, var(--tone) 24%, transparent);
+    white-space: nowrap;
+    cursor: crosshair;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--tone) 32%, transparent);
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+  }
+
+  .cli-stream:hover,
+  .cli-stream.is-glitching {
+    color: #101110;
+    background: var(--tone);
+    border-color: var(--tone);
+    text-shadow: none;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--tone) 55%, transparent);
+  }
+
+  .cli-prompt {
+    opacity: 0.55;
+    font-size: 10px;
+  }
+
+  /* =========================================================
+     中心锚点：Oneadto
+     ========================================================= */
+  .center-core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 24;
+    transform: translate3d(calc(-50% + var(--mx, 0px) * 0.25), calc(-50% + var(--my, 0px) * 0.25), 0);
+    text-align: center;
+    padding: 20px 28px;
+    border-radius: 10px;
+    background: radial-gradient(circle at 50% 50%, rgba(17, 17, 17, 0.94) 55%, rgba(17, 17, 17, 0.55) 100%);
+  }
+
+  .core-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: #daff78;
+    letter-spacing: 0.14em;
+    margin-bottom: 6px;
+  }
+
+  .core-cursor {
+    width: 7px;
+    height: 12px;
+    background: #daff78;
+    animation: cursor-blink 1.05s steps(1, end) infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .core-brand {
+    margin: 0;
+    font-size: clamp(64px, 6.4vw, 94px);
+    line-height: 0.92;
+    color: #fcf8ef;
+    letter-spacing: -0.02em;
+  }
+
+  .core-sub {
+    margin: 10px 0 0;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: rgba(236, 233, 225, 0.72);
+    letter-spacing: 0.04em;
+  }
+
+  .core-actions {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .core-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: #111111;
+    background: #e5b92a;
+    border: 1px solid #fae06b;
+    text-decoration: none;
+    box-shadow: 0 8px 22px rgba(229, 185, 42, 0.28);
+    transition: transform 0.18s ease, background-color 0.18s ease;
+  }
+
+  .core-btn:hover {
+    transform: translateY(-1px);
+    background: #f5ce47;
+  }
+
+  .core-email {
+    font-size: 11.5px;
+    color: var(--ink-dim);
+  }
+
+  /* 移动端保持与桌面端一致的环绕星云布局，按手机窄屏等比缩放与坐标映射 */
+  @media (max-width: 768px) {
+    .orbit-item {
+      left: var(--mob-x);
+      top: var(--mob-y);
+    }
+    .center-core {
+      padding: 10px 14px;
+    }
+    .core-status {
+      font-size: 9.5px;
+      margin-bottom: 3px;
+    }
+    .core-brand {
+      font-size: 46px;
+    }
+    .core-sub {
+      margin-top: 6px;
+      font-size: 10.5px;
+    }
+    .core-actions {
+      margin-top: 10px;
+      gap: 6px;
+    }
+    .core-btn {
+      padding: 6px 14px;
+      font-size: 11px;
+    }
+    .core-email {
+      font-size: 10.5px;
+    }
+    .site-tech-node {
+      padding: 4px 9px;
+      gap: 4px;
+    }
+    .site-tech-prefix {
+      font-size: 7.5px;
+    }
+    .site-tech-word {
+      font-size: 13.5px;
+    }
+    .project-node {
+      padding: 4px 8px;
+      gap: 5px;
+    }
+    .project-node-idx {
+      font-size: 8px;
+      padding: 1px 3.5px;
+    }
+    .project-node-title {
+      font-size: 15px;
+    }
+    .project-node-arrow {
+      font-size: 10px;
+    }
+    .cli-stream {
+      padding: 2px 5px;
+      gap: 3px;
+      font-size: 7.5px;
+      letter-spacing: 0.02em;
+    }
+    .cli-prompt {
+      font-size: 7.5px;
+    }
+  }
+</style>

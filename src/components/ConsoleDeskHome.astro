@@ -1,0 +1,1498 @@
+---
+import { PROJECTS } from '@/data/projects';
+
+interface CartridgeDef {
+  id: string;
+  index: string;
+  name: string;
+  subtitle: string;
+  badge: string;
+  href: string;
+  accent: string;
+  labelBg: string;
+  xPct: number;
+  yPct: number;
+  rot: number;
+  mobXPct: number;
+  mobYPct: number;
+}
+
+const CARTRIDGES: CartridgeDef[] = [
+  {
+    id: 'orbitspace',
+    index: '01',
+    name: PROJECTS[0].name,
+    subtitle: '代码与文档协同',
+    badge: '协同空间',
+    href: '/projects/orbitspace',
+    accent: PROJECTS[0].accent,
+    labelBg: '#10211c',
+    xPct: 0.14,
+    yPct: 0.44,
+    rot: -10,
+    mobXPct: 0.25,
+    mobYPct: 0.44,
+  },
+  {
+    id: 'anvil',
+    index: '02',
+    name: PROJECTS[1].name,
+    subtitle: '本地环境编排',
+    badge: '环境编排',
+    href: '/projects/anvil',
+    accent: PROJECTS[1].accent,
+    labelBg: '#0d1d26',
+    xPct: 0.21,
+    yPct: 0.77,
+    rot: 6,
+    mobXPct: 0.75,
+    mobYPct: 0.45,
+  },
+  {
+    id: 'dropdrop',
+    index: '03',
+    name: PROJECTS[2].name,
+    subtitle: '局域网安全快传',
+    badge: '局域网快传',
+    href: '/projects/dropdrop',
+    accent: PROJECTS[2].accent,
+    labelBg: '#241010',
+    xPct: 0.79,
+    yPct: 0.77,
+    rot: -6,
+    mobXPct: 0.25,
+    mobYPct: 0.63,
+  },
+  {
+    id: 'lab',
+    index: '04',
+    name: 'LAB',
+    subtitle: '像素与示波原型',
+    badge: 'LAB',
+    href: '/lab',
+    accent: '#c084fc',
+    labelBg: '#1b1128',
+    xPct: 0.86,
+    yPct: 0.44,
+    rot: 10,
+    mobXPct: 0.75,
+    mobYPct: 0.64,
+  },
+  {
+    id: 'about',
+    index: '05',
+    name: 'About',
+    subtitle: '关于与技术栈',
+    badge: '关于',
+    href: '/profile',
+    accent: '#fcf8ef',
+    labelBg: '#191a19',
+    xPct: 0.5,
+    yPct: 0.79,
+    rot: -2,
+    mobXPct: 0.5,
+    mobYPct: 0.81,
+  },
+];
+---
+
+<section
+  id="console-desk"
+  class="desk-stage relative flex-1 w-full max-w-[1360px] mx-auto select-none overflow-hidden"
+  aria-label="复古卡带主机交互桌面"
+>
+  <!-- =========================================================
+       复古红白主机（第一版简洁造型，独立三层插槽遮挡）
+       层 1 (z-10): .console-rear  机身上半壳 + 卡槽内腔
+       层 2 (z-16): .cartridge.is-inserting 插入态立体黄卡
+       层 3 (z-26): .console-front 机身前半酒红控制面板
+       ========================================================= -->
+  <div id="retro-console" class="console-anchor" aria-label="复古卡带主机">
+    <div class="console-rear" data-console-part>
+      <div class="console-vents console-vents-l" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="console-vents console-vents-r" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="console-gold-bar">
+        <span class="font-pixel text-[8px] sm:text-[9px] tracking-[0.14em] text-[#45310f]">
+          ONEADTO · DECK 01
+        </span>
+        <span class="font-mono-hud text-[9px] tracking-[0.1em] text-[#594017]">
+          8-BIT SYSTEM
+        </span>
+      </div>
+
+      <div id="console-slot" class="console-slot">
+        <div class="slot-pins" aria-hidden="true"></div>
+        <div id="slot-guide" class="slot-guide" aria-hidden="true">
+          <span class="slot-guide-arrow">↓ 松手插入卡槽 ↓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="console-front" data-console-part aria-hidden="true">
+      <div class="slot-front-lip"></div>
+
+      <div class="console-burgundy-deck">
+        <div class="ctrl-group">
+          <div class="ctrl-switch">
+            <span class="ctrl-knob"></span>
+          </div>
+          <div class="ctrl-label-row">
+            <span id="console-power-led" class="console-power-led"></span>
+            <span class="ctrl-text">电源</span>
+          </div>
+        </div>
+
+        <div class="console-vfd">
+          <div class="vfd-top-row">
+            <span class="font-pixel text-[7.5px] sm:text-[8.5px] text-[#e5b92a]/80">卡槽 A</span>
+            <span id="vfd-status-tag" class="font-mono-hud text-[9px] text-[#9ca3af]">待机</span>
+          </div>
+          <div id="vfd-title" class="vfd-title">请拖入黄色卡带</div>
+          <div class="vfd-index-strip">
+            <span>01 OrbitSpace</span>
+            <span>02 Anvil</span>
+            <span>03 Dropdrop</span>
+            <span>04 LAB</span>
+            <span>05 About</span>
+          </div>
+        </div>
+
+        <div class="ctrl-group items-end">
+          <div class="ctrl-reset-btn"></div>
+          <span class="ctrl-text">复位</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="slot-tooltip" class="slot-tooltip" aria-live="polite">
+      <span class="slot-tooltip-arrow" aria-hidden="true"></span>
+      <span id="slot-tooltip-text">拖入黄卡以启动</span>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       4 张超立体横版经典黄卡（注塑倒角 + 实心 3D 塑料厚度 + 内凹贴纸 + 金手指）
+       ========================================================= -->
+  {
+    CARTRIDGES.map((cart, idx) => (
+      <div
+        class="cartridge is-entering"
+        role="button"
+        tabindex="0"
+        data-cart-id={cart.id}
+        data-cart-index={cart.index}
+        data-cart-name={cart.name}
+        data-cart-subtitle={cart.subtitle}
+        data-cart-href={cart.href}
+        data-cart-accent={cart.accent}
+        data-x-pct={cart.xPct}
+        data-y-pct={cart.yPct}
+        data-mob-x-pct={cart.mobXPct}
+        data-mob-y-pct={cart.mobYPct}
+        data-rot={cart.rot}
+        data-index={idx}
+        style={`--cart-accent: ${cart.accent}; --label-bg: ${cart.labelBg};`}
+        aria-label={`卡带 ${cart.index} ${cart.name}（${cart.subtitle}），拖入上方卡槽或按回车键启动`}
+      >
+        <div class="cart-body-3d">
+          <!-- 真实立体黄色 ABS 外壳主体 -->
+          <div class="cart-shell">
+            <!-- 塑料外壳斜向高光反光层 -->
+            <div class="cart-plastic-sheen" aria-hidden="true"></div>
+
+            <!-- 顶部模压防滑抓握区（左右双排凹纹 + 居中编号） -->
+            <div class="cart-grip-bar" aria-hidden="true">
+              <div class="cart-ribs">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <span class="cart-molded-tag font-pixel">NO.{cart.index}</span>
+              <div class="cart-ribs">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <!-- 深凹贴纸框 + 定制封面贴纸 -->
+            <div class="cart-label-recess">
+              <div class="cart-label">
+                <div class="cart-label-grid">
+                  <div class="cart-art" aria-hidden="true">
+                    {cart.id === 'orbitspace' && (
+                      <svg viewBox="0 0 64 64" class="w-full h-full">
+                        <ellipse cx="32" cy="32" rx="25" ry="11" fill="none" stroke="#daff78" stroke-opacity="0.36" stroke-width="1.4" transform="rotate(-24 32 32)" />
+                        <path d="M 10 42 C 24 42, 26 20, 40 20 C 48 20, 52 30, 56 26" fill="none" stroke="#daff78" stroke-width="2.4" stroke-linecap="round" />
+                        <circle cx="20" cy="37" r="3.4" fill="#fcf8ef" />
+                        <circle cx="40" cy="20" r="5" fill="#daff78" />
+                      </svg>
+                    )}
+                    {cart.id === 'anvil' && (
+                      <svg viewBox="0 0 64 64" class="w-full h-full">
+                        <line x1="16" y1="32" x2="34" y2="18" stroke="#22d3ee" stroke-width="1.8" />
+                        <line x1="16" y1="32" x2="34" y2="46" stroke="#22d3ee" stroke-width="1.8" />
+                        <line x1="34" y1="18" x2="50" y2="32" stroke="#22d3ee" stroke-opacity="0.72" stroke-width="1.6" stroke-dasharray="3 2" />
+                        <line x1="34" y1="46" x2="50" y2="32" stroke="#22d3ee" stroke-width="1.8" />
+                        <rect x="8" y="26" width="12" height="12" rx="2" fill="#09151d" stroke="#22d3ee" stroke-width="1.7" />
+                        <rect x="28" y="12" width="12" height="12" rx="2" fill="#22d3ee" />
+                        <rect x="28" y="40" width="12" height="12" rx="2" fill="#09151d" stroke="#22d3ee" stroke-width="1.7" />
+                        <rect x="44" y="26" width="12" height="12" rx="2" fill="#09151d" stroke="#4ade80" stroke-width="1.7" />
+                      </svg>
+                    )}
+                    {cart.id === 'dropdrop' && (
+                      <svg viewBox="0 0 64 64" class="w-full h-full">
+                        <circle cx="32" cy="32" r="22" fill="none" stroke="#ff4d3d" stroke-opacity="0.28" stroke-width="1.4" />
+                        <circle cx="32" cy="32" r="14" fill="none" stroke="#ff4d3d" stroke-opacity="0.55" stroke-width="1.6" />
+                        <circle cx="32" cy="32" r="6.2" fill="#ff4d3d" />
+                        <line x1="8" y1="32" x2="18" y2="32" stroke="#ff4d3d" stroke-width="1.7" />
+                        <line x1="46" y1="32" x2="56" y2="32" stroke="#ff4d3d" stroke-width="1.7" />
+                      </svg>
+                    )}
+                    {cart.id === 'lab' && (
+                      <svg viewBox="0 0 64 64" class="w-full h-full">
+                        <path d="M 8 32 Q 16 12, 24 32 T 40 32 T 56 32" fill="none" stroke="#c084fc" stroke-width="2.2" />
+                        <rect x="14" y="14" width="6" height="6" fill="#c084fc" fill-opacity="0.68" />
+                        <rect x="22" y="20" width="5" height="5" fill="#fcf8ef" fill-opacity="0.88" />
+                        <rect x="42" y="42" width="6" height="6" fill="#daff78" fill-opacity="0.82" />
+                      </svg>
+                    )}
+                    {cart.id === 'about' && (
+                      <svg viewBox="0 0 64 64" class="w-full h-full">
+                        <circle cx="32" cy="32" r="23" fill="none" stroke="#ece9e1" stroke-opacity="0.22" stroke-width="1.2" stroke-dasharray="3 3" />
+                        <circle cx="32" cy="32" r="13" fill="none" stroke="#daff78" stroke-opacity="0.45" stroke-width="1.3" />
+                        <line x1="8" y1="32" x2="56" y2="32" stroke="#ece9e1" stroke-opacity="0.16" stroke-width="1" />
+                        <line x1="32" y1="8" x2="32" y2="56" stroke="#ece9e1" stroke-opacity="0.16" stroke-width="1" />
+                        <circle cx="32" cy="32" r="4.5" fill="#fcf8ef" />
+                        <rect x="44" y="14" width="6" height="3" fill="#daff78" />
+                        <rect x="12" y="45" width="7" height="3" fill="#22d3ee" />
+                      </svg>
+                    )}
+                  </div>
+
+                  <div class="cart-label-body">
+                    <span
+                      class="cart-label-badge"
+                      style={`color: ${cart.accent}; border-color: color-mix(in srgb, ${cart.accent} 48%, transparent);`}
+                    >
+                      {cart.badge}
+                    </span>
+                    <div class="cart-title">{cart.name}</div>
+                    <div class="cart-subtitle">{cart.subtitle}</div>
+                  </div>
+                </div>
+
+                <div class="cart-label-foot">
+                  <span>ONEADTO 卡带</span>
+                  <span style={`color: ${cart.accent};`}>● 就绪</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部模压插入箭头凹印 -->
+            <div class="cart-bottom-mark" aria-hidden="true">
+              <span class="cart-insert-tri">▼</span>
+            </div>
+          </div>
+
+          <!-- 阶梯收窄的底部卡脚与深凹金手指电路板 -->
+          <div class="cart-foot-shroud" aria-hidden="true">
+            <div class="cart-pcb-cavity">
+              <div class="cart-pcb-pins"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))
+  }
+
+  <!-- 右下轻量操作 -->
+  <div class="desk-corner-right flex items-center gap-4">
+    <button id="reset-desk-btn" type="button" class="vcr-link text-[11.5px] text-[var(--ink-dim)]">
+      [整理归位]
+    </button>
+    <a href="/projects" class="vcr-link text-[11.5px]">
+      全部作品 [→]
+    </a>
+  </div>
+
+  <!-- 插卡读取过场条 -->
+  <div id="boot-overlay" class="boot-overlay" aria-hidden="true">
+    <div class="boot-panel">
+      <div class="flex items-center justify-between font-mono-hud text-[11.5px] mb-2">
+        <span id="boot-status" class="text-[#fcf8ef]">正在读取卡带...</span>
+        <span id="boot-pct" class="font-pixel text-[10px] text-[#e5b92a]">00%</span>
+      </div>
+      <div class="boot-bar-track">
+        <div id="boot-bar-fill" class="boot-bar-fill"></div>
+      </div>
+      <div id="boot-sub" class="mt-2 font-mono-hud text-[10.5px] text-[var(--ink-dim)]">
+        即将进入页面
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { navigate } from 'astro:transitions/client';
+  import { playSound } from '@/lib/sound';
+
+  interface CartState {
+    el: HTMLElement;
+    id: string;
+    index: string;
+    name: string;
+    subtitle: string;
+    href: string;
+    accent: string;
+    x: number;
+    y: number;
+    rot: number;
+    tiltX: number;
+    tiltY: number;
+    baseRot: number;
+    z: number;
+  }
+
+  function playRetroTone(kind: 'snap' | 'insert' | 'pickup') {
+    playSound(kind);
+  }
+
+  function initConsoleDesk() {
+    const desk = document.getElementById('console-desk');
+    const consoleEl = document.getElementById('retro-console');
+    const consoleParts = Array.from(document.querySelectorAll<HTMLElement>('[data-console-part]'));
+    const slotEl = document.getElementById('console-slot');
+    const slotGuide = document.getElementById('slot-guide');
+    const vfdTitle = document.getElementById('vfd-title');
+    const vfdTag = document.getElementById('vfd-status-tag');
+    const powerLed = document.getElementById('console-power-led');
+    const tooltip = document.getElementById('slot-tooltip');
+    const tooltipText = document.getElementById('slot-tooltip-text');
+    const bootOverlay = document.getElementById('boot-overlay');
+    const bootStatus = document.getElementById('boot-status');
+    const bootPct = document.getElementById('boot-pct');
+    const bootBar = document.getElementById('boot-bar-fill');
+    const bootSub = document.getElementById('boot-sub');
+    const resetBtn = document.getElementById('reset-desk-btn');
+
+    if (!desk || !consoleEl || !slotEl) return;
+
+    const cartEls = Array.from(desk.querySelectorAll<HTMLElement>('.cartridge'));
+    const carts: CartState[] = [];
+    let topZ = 30;
+    let isBooting = false;
+    const timers: number[] = [];
+
+    const setHud = (main: string, branch: string, color: string) => {
+      window.dispatchEvent(
+        new CustomEvent('oneadto:hud-caption', {
+          detail: { top: '', main, branch, color },
+        })
+      );
+    };
+
+    const setVfd = (tag: string, title: string, color = '#ece9e1') => {
+      if (vfdTag) {
+        vfdTag.textContent = tag;
+        vfdTag.style.color = color;
+      }
+      if (vfdTitle) {
+        vfdTitle.textContent = title;
+        vfdTitle.style.color = color;
+      }
+    };
+
+    const getDeskRect = () => desk.getBoundingClientRect();
+
+    const getSlotTarget = () => {
+      const dRect = getDeskRect();
+      const sRect = slotEl.getBoundingClientRect();
+      return {
+        x: sRect.left - dRect.left + sRect.width / 2,
+        y: sRect.top - dRect.top + sRect.height / 2,
+        width: sRect.width,
+        height: sRect.height,
+      };
+    };
+
+    // 真实 3D 透视变换渲染（拿起与拖动时带立体俯仰倾斜）
+    const renderCart = (c: CartState, scale = 1, shadowLift = false) => {
+      c.el.style.zIndex = String(c.z);
+      c.el.style.transform = `translate3d(${c.x}px, ${c.y}px, 0) translate(-50%, -50%) perspective(820px) rotateX(${c.tiltX}deg) rotateY(${c.tiltY}deg) rotateZ(${c.rot}deg) scale(${scale})`;
+      c.el.classList.toggle('is-lifted', shadowLift);
+    };
+
+    const computeHomeCoords = (el: HTMLElement) => {
+      const rect = getDeskRect();
+      const isMobile = rect.width < 680;
+      const xPct = Number(isMobile ? el.dataset.mobXPct : el.dataset.xPct);
+      const yPct = Number(isMobile ? el.dataset.mobYPct : el.dataset.yPct);
+      const baseRot = Number(el.dataset.rot || 0);
+      return {
+        x: rect.width * xPct,
+        y: rect.height * yPct,
+        rot: isMobile ? baseRot * 0.5 : baseRot,
+      };
+    };
+
+    const initRect = getDeskRect();
+    cartEls.forEach((el, idx) => {
+      const home = computeHomeCoords(el);
+      const state: CartState = {
+        el,
+        id: el.dataset.cartId || '',
+        index: el.dataset.cartIndex || '01',
+        name: el.dataset.cartName || '',
+        subtitle: el.dataset.cartSubtitle || '',
+        href: el.dataset.cartHref || '/',
+        accent: el.dataset.cartAccent || '#daff78',
+        x: initRect.width * 0.5,
+        y: initRect.height * 0.86,
+        rot: (idx - 1.5) * 4,
+        tiltX: 0,
+        tiltY: 0,
+        baseRot: home.rot,
+        z: 30 + idx,
+      };
+      carts.push(state);
+      renderCart(state, 0.94, false);
+
+      timers.push(
+        window.setTimeout(() => {
+          el.classList.add('is-gliding');
+          el.classList.remove('is-entering');
+          state.x = home.x;
+          state.y = home.y;
+          state.rot = home.rot;
+          renderCart(state, 1, false);
+          timers.push(
+            window.setTimeout(() => {
+              el.classList.remove('is-gliding');
+            }, 540)
+          );
+        }, 110 + idx * 65)
+      );
+    });
+
+    const clampToDesk = (x: number, y: number, el: HTMLElement) => {
+      const dRect = getDeskRect();
+      const cw = el.offsetWidth * 0.45;
+      const ch = el.offsetHeight * 0.45;
+      return {
+        x: Math.min(dRect.width - cw, Math.max(cw, x)),
+        y: Math.min(dRect.height - ch - 12, Math.max(ch, y)),
+      };
+    };
+
+    const setSlotHoverVisual = (cart: CartState | null) => {
+      if (!slotGuide) return;
+      if (cart) {
+        slotEl.classList.add('is-magnet-ready');
+        slotGuide.style.setProperty('--guide-color', cart.accent);
+        setVfd('已吸附', `${cart.name} · 松手插入`, cart.accent);
+        if (tooltip && tooltipText) {
+          tooltip.classList.add('is-ready');
+          tooltipText.textContent = '松手即可插入启动';
+        }
+        setHud(`${cart.index} · ${cart.name}（松手启动）`, cart.name, cart.accent);
+      } else {
+        slotEl.classList.remove('is-magnet-ready');
+        setVfd('待机', '请拖入黄色卡带', '#ece9e1');
+        if (tooltip && tooltipText) {
+          tooltip.classList.remove('is-ready');
+          tooltipText.textContent = '拖入黄卡以启动';
+        }
+        setHud('将黄色卡带拖入上方卡槽启动', '待机', '#e5b92a');
+      }
+    };
+
+    const insertAndLaunch = (cart: CartState, fromAutoFly = false) => {
+      if (isBooting) return;
+      isBooting = true;
+
+      const slot = getSlotTarget();
+      const cartH = cart.el.offsetHeight;
+
+      tooltip?.classList.add('is-hidden');
+      slotEl.classList.remove('is-magnet-ready');
+      slotEl.classList.add('is-inserting');
+      setVfd('读取中', `正在载入 ${cart.name}...`, cart.accent);
+      setHud(`${cart.index} · ${cart.name}`, cart.name, cart.accent);
+
+      const doPlunge = () => {
+        playRetroTone('insert');
+        cart.z = 16;
+        cart.rot = 0;
+        cart.tiltX = 0;
+        cart.tiltY = 0;
+        cart.x = slot.x;
+        cart.y = slot.y + cartH * 0.1;
+        cart.el.classList.remove('is-held');
+        cart.el.classList.add('is-inserting');
+        renderCart(cart, 0.9, false);
+
+        consoleParts.forEach((p) => p.classList.add('is-thumping'));
+        powerLed?.classList.add('is-reading');
+        timers.push(
+          window.setTimeout(() => {
+            consoleParts.forEach((p) => p.classList.remove('is-thumping'));
+          }, 210)
+        );
+
+        timers.push(
+          window.setTimeout(() => {
+            if (bootOverlay && bootStatus && bootBar && bootPct && bootSub) {
+              bootOverlay.classList.add('is-visible');
+              bootStatus.textContent = `正在读取 · ${cart.name}`;
+              bootSub.textContent = `${cart.subtitle} · 即将打开`;
+              bootBar.style.setProperty('--boot-accent', cart.accent);
+              bootBar.style.width = '100%';
+
+              let pct = 12;
+              const pctStep = window.setInterval(() => {
+                pct = Math.min(100, pct + 18);
+                bootPct.textContent = `${String(pct).padStart(2, '0')}%`;
+                if (pct >= 100) window.clearInterval(pctStep);
+              }, 72);
+              timers.push(pctStep as unknown as number);
+            }
+          }, 185)
+        );
+
+        timers.push(
+          window.setTimeout(() => {
+            try {
+              navigate(cart.href);
+            } catch (_) {
+              window.location.href = cart.href;
+            }
+          }, 820)
+        );
+      };
+
+      if (fromAutoFly) {
+        cart.z = ++topZ;
+        cart.rot = 0;
+        cart.tiltX = 4;
+        cart.tiltY = 0;
+        cart.x = slot.x;
+        cart.y = slot.y - cartH * 0.28;
+        cart.el.classList.add('is-gliding');
+        renderCart(cart, 0.98, true);
+        playRetroTone('snap');
+        timers.push(
+          window.setTimeout(() => {
+            cart.el.classList.remove('is-gliding');
+            doPlunge();
+          }, 250)
+        );
+      } else {
+        doPlunge();
+      }
+    };
+
+    const cleanups: Array<() => void> = [];
+
+    carts.forEach((cart) => {
+      let dragging = false;
+      let pointerId = -1;
+      let grabOffsetX = 0;
+      let grabOffsetY = 0;
+      let lastPointerX = 0;
+      let lastPointerY = 0;
+      let snapped = false;
+      let movedDist = 0;
+      let lastTapAt = 0;
+
+      const onPointerDown = (e: PointerEvent) => {
+        if (isBooting || e.button > 0) return;
+        dragging = true;
+        pointerId = e.pointerId;
+        movedDist = 0;
+        snapped = false;
+
+        const dRect = getDeskRect();
+        const px = e.clientX - dRect.left;
+        const py = e.clientY - dRect.top;
+        grabOffsetX = cart.x - px;
+        grabOffsetY = cart.y - py;
+        lastPointerX = px;
+        lastPointerY = py;
+
+        cart.z = ++topZ;
+        cart.tiltX = 6;
+        cart.tiltY = 0;
+        cart.el.classList.remove('is-gliding');
+        cart.el.classList.add('is-held');
+        cart.el.setPointerCapture(pointerId);
+        renderCart(cart, 1.06, true);
+        playRetroTone('pickup');
+        setHud(`${cart.index} · ${cart.name}`, cart.name, cart.accent);
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (!dragging || e.pointerId !== pointerId || isBooting) return;
+        const dRect = getDeskRect();
+        const px = e.clientX - dRect.left;
+        const py = e.clientY - dRect.top;
+        const vx = px - lastPointerX;
+        const vy = py - lastPointerY;
+        movedDist += Math.abs(vx) + Math.abs(vy);
+        lastPointerX = px;
+        lastPointerY = py;
+
+        const rawX = px + grabOffsetX;
+        const rawY = py + grabOffsetY;
+        const clamped = clampToDesk(rawX, rawY, cart.el);
+
+        const slot = getSlotTarget();
+        const dx = clamped.x - slot.x;
+        const dy = clamped.y - (slot.y + 18);
+        const dist = Math.hypot(dx * 0.78, dy);
+        const snapRadius = Math.max(166, slot.width * 1.0);
+
+        if (dist < snapRadius) {
+          const proximity = 1 - dist / snapRadius;
+          const pull = 0.5 + 0.44 * Math.pow(proximity, 0.7);
+          const targetHoverY = slot.y - cart.el.offsetHeight * 0.25;
+
+          cart.x = clamped.x + (slot.x - clamped.x) * pull;
+          cart.y = clamped.y + (targetHoverY - clamped.y) * pull;
+          cart.rot = cart.rot * (1 - pull);
+          cart.tiltX = 3 * (1 - pull);
+          cart.tiltY = 0;
+
+          if (!snapped) {
+            snapped = true;
+            playRetroTone('snap');
+            setSlotHoverVisual(cart);
+          }
+          renderCart(cart, 0.98, true);
+        } else {
+          if (snapped) {
+            snapped = false;
+            setSlotHoverVisual(null);
+          }
+          cart.x = clamped.x;
+          cart.y = clamped.y;
+          const velTiltZ = Math.max(-13, Math.min(13, vx * 0.45));
+          cart.rot = cart.baseRot * 0.35 + velTiltZ;
+          cart.tiltY = Math.max(-14, Math.min(14, vx * 0.65));
+          cart.tiltX = Math.max(-10, Math.min(14, 5 - vy * 0.45));
+          renderCart(cart, 1.06, true);
+        }
+      };
+
+      const finishDrag = (e: PointerEvent) => {
+        if (!dragging || e.pointerId !== pointerId) return;
+        dragging = false;
+        try {
+          cart.el.releasePointerCapture(pointerId);
+        } catch (_) {}
+        cart.el.classList.remove('is-held');
+
+        if (snapped) {
+          insertAndLaunch(cart, false);
+          return;
+        }
+
+        cart.tiltX = 0;
+        cart.tiltY = 0;
+        if (movedDist > 6) {
+          cart.rot = Math.max(-14, Math.min(14, cart.rot * 0.72));
+          cart.baseRot = cart.rot;
+        } else {
+          cart.rot = cart.baseRot;
+          const now = performance.now();
+          if (now - lastTapAt < 340) {
+            lastTapAt = 0;
+            insertAndLaunch(cart, true);
+            return;
+          }
+          lastTapAt = now;
+        }
+        renderCart(cart, 1, false);
+        setSlotHoverVisual(null);
+      };
+
+      const onDblClick = () => {
+        if (!isBooting) insertAndLaunch(cart, true);
+      };
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !isBooting) {
+          e.preventDefault();
+          insertAndLaunch(cart, true);
+        }
+      };
+
+      cart.el.addEventListener('pointerdown', onPointerDown);
+      cart.el.addEventListener('pointermove', onPointerMove);
+      cart.el.addEventListener('pointerup', finishDrag);
+      cart.el.addEventListener('pointercancel', finishDrag);
+      cart.el.addEventListener('dblclick', onDblClick);
+      cart.el.addEventListener('keydown', onKeyDown);
+
+      cleanups.push(() => {
+        cart.el.removeEventListener('pointerdown', onPointerDown);
+        cart.el.removeEventListener('pointermove', onPointerMove);
+        cart.el.removeEventListener('pointerup', finishDrag);
+        cart.el.removeEventListener('pointercancel', finishDrag);
+        cart.el.removeEventListener('dblclick', onDblClick);
+        cart.el.removeEventListener('keydown', onKeyDown);
+      });
+    });
+
+    const onReset = () => {
+      if (isBooting) return;
+      carts.forEach((cart, idx) => {
+        const home = computeHomeCoords(cart.el);
+        cart.el.classList.add('is-gliding');
+        cart.x = home.x;
+        cart.y = home.y;
+        cart.rot = home.rot;
+        cart.tiltX = 0;
+        cart.tiltY = 0;
+        cart.baseRot = home.rot;
+        cart.z = 30 + idx;
+        renderCart(cart, 1, false);
+        timers.push(
+          window.setTimeout(() => {
+            cart.el.classList.remove('is-gliding');
+          }, 520)
+        );
+      });
+      setSlotHoverVisual(null);
+    };
+    resetBtn?.addEventListener('click', onReset);
+    cleanups.push(() => resetBtn?.removeEventListener('click', onReset));
+
+    const onResize = () => {
+      if (isBooting) return;
+      carts.forEach((cart) => {
+        const clamped = clampToDesk(cart.x, cart.y, cart.el);
+        cart.x = clamped.x;
+        cart.y = clamped.y;
+        renderCart(cart, 1, false);
+      });
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+    cleanups.push(() => window.removeEventListener('resize', onResize));
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        timers.forEach((t) => {
+          window.clearTimeout(t);
+          window.clearInterval(t);
+        });
+        cleanups.forEach((fn) => fn());
+      },
+      { once: true }
+    );
+  }
+
+  document.addEventListener('astro:page-load', initConsoleDesk);
+</script>
+
+<style>
+  .desk-stage {
+    min-height: 520px;
+  }
+
+  /* =========================================================
+     复古红白主机（第一版简洁造型）
+     ========================================================= */
+  .console-anchor {
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: clamp(296px, 34vw, 430px);
+    pointer-events: none;
+  }
+
+  .console-rear,
+  .console-front {
+    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .console-rear.is-thumping,
+  .console-front.is-thumping {
+    transform: translateY(3px);
+  }
+
+  .console-rear {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    background: linear-gradient(180deg, #dfd7c4 0%, #cfc6b1 100%);
+    border-radius: 10px 10px 0 0;
+    padding: 12px 18px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-bottom: none;
+    box-shadow:
+      0 22px 44px rgba(0, 0, 0, 0.72),
+      inset 0 2px 0 rgba(255, 255, 255, 0.52),
+      inset 8px 0 0 #7b1820,
+      inset -8px 0 0 #7b1820;
+  }
+
+  .console-vents {
+    position: absolute;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 34px;
+  }
+  .console-vents-l {
+    left: 20px;
+  }
+  .console-vents-r {
+    right: 20px;
+  }
+  .console-vents span {
+    height: 2px;
+    border-radius: 1px;
+    background: rgba(54, 46, 36, 0.45);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+
+  .console-gold-bar {
+    margin: 0 auto 10px;
+    max-width: 72%;
+    padding: 4px 10px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #b89143 0%, #e1c176 48%, #b38b3e 100%);
+    border: 1px solid rgba(90, 62, 16, 0.45);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .console-slot {
+    position: relative;
+    margin: 0 auto;
+    width: 78%;
+    height: 36px;
+    border-radius: 5px;
+    background: #0a0a0a;
+    border: 2px solid #2b2520;
+    box-shadow:
+      inset 0 6px 14px rgba(0, 0, 0, 0.95),
+      0 1px 0 rgba(255, 255, 255, 0.45);
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .slot-pins {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 6px;
+    height: 4px;
+    opacity: 0.42;
+    background: repeating-linear-gradient(
+      90deg,
+      #c69c38 0px,
+      #c69c38 3px,
+      transparent 3px,
+      transparent 6px
+    );
+  }
+
+  .slot-guide {
+    position: absolute;
+    inset: -7px -8px;
+    border-radius: 7px;
+    border: 1.5px dashed var(--guide-color, #daff78);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--guide-color, #daff78) 45%, transparent);
+    opacity: 0;
+    transform: scale(0.96);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .slot-guide-arrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--guide-color, #daff78);
+    background: rgba(12, 12, 12, 0.92);
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+
+  .console-slot.is-magnet-ready .slot-guide {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .console-front {
+    position: relative;
+    z-index: 26;
+    pointer-events: none;
+    background: linear-gradient(180deg, #cfc5b0 0%, #beb39b 100%);
+    border-radius: 0 0 12px 12px;
+    padding: 6px 12px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-top: none;
+    box-shadow:
+      0 26px 46px rgba(0, 0, 0, 0.8),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.28),
+      inset 8px 0 0 #7b1820,
+      inset -8px 0 0 #7b1820;
+  }
+
+  .slot-front-lip {
+    height: 3px;
+    width: 80%;
+    margin: -6px auto 8px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  }
+
+  .console-burgundy-deck {
+    background: linear-gradient(180deg, #861d25 0%, #611219 100%);
+    border-radius: 7px;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.42);
+    display: grid;
+    grid-template-columns: 50px 1fr 44px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .ctrl-switch {
+    width: 34px;
+    height: 14px;
+    border-radius: 3px;
+    background: #23090c;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .ctrl-knob {
+    width: 15px;
+    height: 10px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #ebe3d0, #b8ae99);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+
+  .ctrl-reset-btn {
+    width: 24px;
+    height: 14px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #e7decb, #b6ac97);
+    border: 1px solid rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2px 0 #340c10;
+  }
+
+  .ctrl-label-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .console-power-led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff453a;
+    box-shadow: 0 0 8px #ff453a, 0 0 2px #fff;
+  }
+
+  .console-power-led.is-reading {
+    animation: led-flash 0.16s steps(1, end) infinite;
+  }
+
+  @keyframes led-flash {
+    0%, 100% {
+      opacity: 1;
+      background: #4ade80;
+      box-shadow: 0 0 10px #4ade80;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .ctrl-text {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: rgba(247, 236, 220, 0.78);
+    letter-spacing: 0.08em;
+  }
+
+  .console-vfd {
+    background: #0c100f;
+    border: 1px solid rgba(212, 175, 85, 0.38);
+    border-radius: 4px;
+    padding: 5px 9px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.9);
+    text-align: center;
+  }
+
+  .vfd-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .vfd-title {
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: #ece9e1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  .vfd-index-strip {
+    margin-top: 4px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(236, 233, 225, 0.1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: rgba(236, 233, 225, 0.45);
+  }
+
+  .slot-tooltip {
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 46px;
+    z-index: 28;
+    background: #fcf6dc;
+    color: #1c1914;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 11px;
+    border-radius: 4px;
+    border: 1px solid rgba(28, 25, 20, 0.35);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+    white-space: nowrap;
+    transition: opacity 0.22s ease, transform 0.22s ease, background-color 0.2s ease;
+  }
+
+  .slot-tooltip.is-ready {
+    background: #daff78;
+    color: #11180d;
+    transform: translateX(3px);
+  }
+
+  .slot-tooltip.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .slot-tooltip-arrow {
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: inherit;
+    border-left: 1px solid rgba(28, 25, 20, 0.3);
+    border-bottom: 1px solid rgba(28, 25, 20, 0.3);
+  }
+
+  /* =========================================================
+     超立体横版经典黄卡（实心 6px 3D 注塑厚度 + 塑料反光 + 阶梯卡脚）
+     ========================================================= */
+  .cartridge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: clamp(152px, 13.6vw, 194px);
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+    outline: none;
+  }
+
+  .cartridge.is-entering {
+    opacity: 0.45;
+  }
+
+  .cartridge.is-gliding {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  }
+
+  .cartridge.is-inserting {
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .cartridge.is-held {
+    cursor: grabbing;
+  }
+
+  .cartridge:focus-visible .cart-shell {
+    outline: 2px solid var(--cart-accent);
+    outline-offset: 4px;
+  }
+
+  .cart-body-3d {
+    position: relative;
+    transition: filter 0.2s ease;
+    filter: drop-shadow(0 18px 20px rgba(0, 0, 0, 0.72));
+  }
+
+  .cartridge.is-lifted .cart-body-3d {
+    filter: drop-shadow(0 36px 34px rgba(0, 0, 0, 0.86));
+  }
+
+  .cart-shell {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(150deg, #fae16d 0%, #eac12e 26%, #d7a617 72%, #b9870a 100%);
+    border-radius: 8px 8px 4px 4px;
+    padding: 6px 8px 4px;
+    border: 1px solid rgba(255, 248, 206, 0.65);
+    /* 多段实心立体注塑厚度边 */
+    box-shadow:
+      0 2px 0 #b88409,
+      0 4px 0 #996b05,
+      0 5px 0 #745003,
+      inset 0 2px 1px rgba(255, 253, 232, 0.72),
+      inset 3px 0 3px rgba(255, 246, 204, 0.34),
+      inset -3px 0 4px rgba(124, 84, 4, 0.38),
+      inset 0 -2px 2px rgba(105, 70, 3, 0.45);
+    transition: filter 0.2s ease;
+  }
+
+  .cartridge:hover .cart-shell {
+    filter: brightness(1.04);
+  }
+
+  /* 模拟 ABS 塑料外壳表面斜向镜面柔光 */
+  .cart-plastic-sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background: linear-gradient(
+      122deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.06) 24%,
+      transparent 25.5%,
+      transparent 76%,
+      rgba(255, 246, 204, 0.09) 88%,
+      transparent 100%
+    );
+  }
+
+  .cart-grip-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 6px;
+    padding: 0 2px;
+  }
+
+  .cart-ribs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cart-ribs span {
+    height: 1.8px;
+    border-radius: 1px;
+    background: #8c6105;
+    box-shadow: 0 1px 0 rgba(255, 246, 200, 0.62);
+  }
+
+  .cart-molded-tag {
+    font-size: 8px;
+    color: #704d04;
+    text-shadow: 0 1px 0 rgba(255, 244, 192, 0.62);
+    white-space: nowrap;
+  }
+
+  /* 深凹塑料贴纸槽 */
+  .cart-label-recess {
+    position: relative;
+    z-index: 2;
+    padding: 2.5px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #8e6205 0%, #c49212 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(56, 36, 2, 0.8),
+      0 1px 0 rgba(255, 246, 198, 0.62);
+  }
+
+  .cart-label {
+    background: var(--label-bg);
+    border-radius: 3px;
+    padding: 6px 7px 5px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #fcf8ef;
+  }
+
+  .cart-label-grid {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .cart-art {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.42);
+    border: 1px solid rgba(236, 233, 225, 0.14);
+    padding: 2px;
+  }
+
+  .cart-label-body {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .cart-label-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    border: 1px solid rgba(236, 233, 225, 0.25);
+    padding: 1px 4px;
+    border-radius: 2px;
+    line-height: 1.25;
+  }
+
+  .cart-title {
+    margin-top: 2px;
+    font-family: var(--font-display);
+    font-size: clamp(16px, 1.38vw, 20px);
+    line-height: 1.08;
+    color: #fcf8ef;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cart-subtitle {
+    margin-top: 2px;
+    font-size: 9.5px;
+    line-height: 1.3;
+    color: rgba(236, 233, 225, 0.72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cart-label-foot {
+    margin-top: 5px;
+    padding-top: 3px;
+    border-top: 1px solid rgba(236, 233, 225, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: rgba(236, 233, 225, 0.48);
+  }
+
+  .cart-bottom-mark {
+    position: relative;
+    z-index: 2;
+    margin-top: 2px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .cart-insert-tri {
+    font-size: 7.5px;
+    color: #7c5604;
+    text-shadow: 0 1px 0 rgba(255, 245, 198, 0.6);
+  }
+
+  /* 阶梯收窄的底部接口护壳 + 深凹金手指 PCB */
+  .cart-foot-shroud {
+    margin: 4px auto 0;
+    width: 82%;
+    height: 12px;
+    background: linear-gradient(180deg, #b8850a 0%, #926705 100%);
+    border-radius: 0 0 4px 4px;
+    padding: 2px 8px 2px;
+    box-shadow:
+      0 2px 0 #704d03,
+      0 3.5px 0 #533802,
+      inset 0 2px 4px rgba(56, 36, 2, 0.55);
+  }
+
+  .cart-pcb-cavity {
+    height: 100%;
+    background: #0d0e0c;
+    border-radius: 1.5px;
+    padding: 2px 6px 0;
+    box-shadow: inset 0 2px 4px #000;
+    overflow: hidden;
+  }
+
+  .cart-pcb-pins {
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      #e2b64c 0px,
+      #f8d97c 2px,
+      #b28320 3.2px,
+      transparent 3.2px,
+      transparent 5.6px
+    );
+  }
+
+  .desk-corner-right {
+    position: absolute;
+    right: 4px;
+    bottom: 8px;
+    z-index: 38;
+  }
+
+  .boot-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 48;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10vh;
+    background: rgba(12, 13, 12, 0.56);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .boot-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .boot-panel {
+    width: min(92%, 380px);
+    padding: 16px 18px;
+    border-radius: 6px;
+    background: #121312;
+    border: 1px solid rgba(236, 233, 225, 0.28);
+    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.85);
+  }
+
+  .boot-bar-track {
+    height: 10px;
+    border-radius: 2px;
+    background: #080908;
+    border: 1px solid rgba(236, 233, 225, 0.2);
+    overflow: hidden;
+    padding: 1px;
+  }
+
+  .boot-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--boot-accent, #daff78) 0px,
+      var(--boot-accent, #daff78) 10px,
+      rgba(12, 13, 12, 0.5) 10px,
+      rgba(12, 13, 12, 0.5) 13px
+    );
+    transition: width 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (max-width: 960px) {
+    .slot-tooltip {
+      display: none;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .console-anchor {
+      width: min(92%, 296px);
+      top: 6px;
+    }
+    .console-rear {
+      padding: 7px 10px 8px;
+    }
+    .console-slot {
+      height: 24px;
+    }
+    .console-burgundy-deck {
+      padding: 6px 8px;
+      grid-template-columns: 40px 1fr 36px;
+      gap: 6px;
+    }
+    .vfd-index-strip {
+      display: none;
+    }
+    .cartridge {
+      width: 126px;
+    }
+    .cart-top-handle {
+      height: 15px;
+      padding: 0 7px;
+    }
+    .cart-body-main {
+      padding: 4px 6px 5px;
+    }
+    .cart-label-sticker {
+      padding: 5px 6px 5px;
+    }
+    .cart-label-grid {
+      grid-template-columns: 26px 1fr;
+      gap: 5px;
+    }
+    .cart-art {
+      width: 26px;
+      height: 26px;
+    }
+    .cart-title {
+      font-size: 13px;
+    }
+    .cart-subtitle {
+      font-size: 8px;
+    }
+    .cart-label-foot {
+      margin-top: 3px;
+      padding-top: 2px;
+    }
+    .cart-bottom-skirt {
+      height: 10px;
+    }
+  }
+</style>

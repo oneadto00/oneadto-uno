@@ -1,0 +1,77 @@
+---
+interface Props {
+  accent?: string;
+  label?: string;
+}
+
+const { accent = '#ece9e1', label = '阅读进度' } = Astro.props;
+const ticks = Array.from({ length: 32 }, (_, i) => i);
+---
+
+<div
+  class="progress-ruler-wrap fixed left-1/2 -translate-x-1/2 bottom-[calc(var(--bezel-y)+var(--hud-bottom-h)+6px)] z-45 hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded bg-[#0d0e0d]/90 border border-[var(--line-subtle)]"
+  data-ruler-accent={accent}
+  aria-hidden="true"
+>
+  <span class="font-mono-hud text-[10.5px] text-[var(--ink-dim)]">
+    [{label}]
+  </span>
+  <div class="flex items-end gap-[4px] h-3" id="ruler-ticks">
+    {
+      ticks.map((t) => (
+        <span
+          class="ruler-tick block w-[2px] transition-all duration-150"
+          data-tick={t}
+          style={`height: ${t % 4 === 0 ? '11px' : '6px'}; background: rgba(236, 233, 225, 0.22);`}
+        />
+      ))
+    }
+  </div>
+  <span id="ruler-pct" class="font-mono-hud text-[10.5px] text-[var(--ink)] w-8 text-right">
+    00%
+  </span>
+</div>
+
+<script>
+  function initProgressRuler() {
+    const wrap = document.querySelector<HTMLElement>('.progress-ruler-wrap');
+    if (!wrap) return;
+    const accent = wrap.dataset.rulerAccent || '#ece9e1';
+    const ticks = Array.from(wrap.querySelectorAll<HTMLElement>('.ruler-tick'));
+    const pctEl = document.getElementById('ruler-pct');
+    let rafId = 0;
+
+    const render = () => {
+      rafId = 0;
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const ratio = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      const litCount = Math.round(ratio * ticks.length);
+      ticks.forEach((el, idx) => {
+        el.style.background = idx < litCount ? accent : 'rgba(236, 233, 225, 0.22)';
+      });
+      if (pctEl) {
+        pctEl.textContent = `${String(Math.round(ratio * 100)).padStart(2, '0')}%`;
+      }
+    };
+
+    const onScroll = () => {
+      if (!rafId) rafId = window.requestAnimationFrame(render);
+    };
+
+    render();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+        if (rafId) window.cancelAnimationFrame(rafId);
+      },
+      { once: true }
+    );
+  }
+
+  document.addEventListener('astro:page-load', initProgressRuler);
+</script>

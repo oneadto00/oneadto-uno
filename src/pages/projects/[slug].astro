@@ -1,0 +1,167 @@
+---
+import CrtLayout from '@/layouts/CrtLayout.astro';
+import ProjectDemo from '@/components/ProjectDemo.astro';
+import ProgressRuler from '@/components/ProgressRuler.astro';
+import { PROJECTS, getNextProject, type ProjectItem } from '@/data/projects';
+
+export function getStaticPaths() {
+  return PROJECTS.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: ProjectItem;
+}
+
+const { project } = Astro.props;
+const nextProject = getNextProject(project.slug);
+---
+
+<CrtLayout
+  title="Oneadto"
+  description={project.overview}
+  activeNav="projects"
+  defaultBranch={project.name}
+  defaultBranchColor={project.accent}
+  defaultCaptionTop=""
+  defaultCaptionMain={`${project.index} · ${project.name}`}
+>
+  <article class="max-w-[920px] mx-auto pt-3 pb-16">
+    <!-- 返回主机导航 -->
+    <div class="mb-6 flex items-center justify-between font-mono-hud text-[12px]">
+      <a href="/" class="vcr-link text-[var(--ink-dim)]">
+        [←] 弹出并返回主机
+      </a>
+      <span style={`color: ${project.accent};`}>
+        [{project.index}] {project.categoryLabel} · #{project.commitHash}
+      </span>
+    </div>
+
+    <!-- 标题与 2x2 元数据矩阵 -->
+    <header class="pb-7 border-b border-[var(--line-subtle)]">
+      <div class="h-[3px] w-16 mb-4 rounded-full" style={`background: ${project.accent};`} />
+      <h1 class="m-0 font-display-serif text-[50px] sm:text-[64px] leading-[0.98] text-[#fcf8ef] phosphor-text">
+        {project.name}
+      </h1>
+      <p class="mt-2.5 mb-0 text-[16px] text-[#e8e4da] font-medium">
+        {project.subtitle}
+      </p>
+      <p class="mt-3 mb-0 text-[14px] leading-[1.78] text-[var(--ink-dim)] max-w-[740px]">
+        {project.overview}
+      </p>
+
+      <dl class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-[13px]">
+        <div class="border-t border-[var(--line-subtle)] pt-3">
+          <dt class="font-mono-hud text-[11px] text-[var(--ink-dim)]">[负责范围]</dt>
+          <dd class="m-0 mt-1 text-[#fcf8ef]">{project.role}</dd>
+        </div>
+        <div class="border-t border-[var(--line-subtle)] pt-3">
+          <dt class="font-mono-hud text-[11px] text-[var(--ink-dim)]">[产品形态]</dt>
+          <dd class="m-0 mt-1 text-[#fcf8ef]">{project.formFactor}</dd>
+        </div>
+        <div class="border-t border-[var(--line-subtle)] pt-3">
+          <dt class="font-mono-hud text-[11px] text-[var(--ink-dim)]">[主要技术栈]</dt>
+          <dd class="m-0 mt-1 font-mono-hud text-[12px] text-[#e8e4da] leading-[1.65]">
+            {project.stack.join(' · ')}
+          </dd>
+        </div>
+        <div class="border-t border-[var(--line-subtle)] pt-3">
+          <dt class="font-mono-hud text-[11px] text-[var(--ink-dim)]">[开源协议与项目地址]</dt>
+          <dd class="m-0 mt-1 flex flex-col gap-1 font-mono-hud text-[12.5px] text-[#fcf8ef]">
+            <span>{project.license}</span>
+            <a
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="vcr-link inline-flex items-center gap-1 w-fit text-[12px] text-[var(--ink-dim)] hover:text-[#fcf8ef]"
+            >
+              <span>{project.repoDisplay}</span>
+              <span aria-hidden="true" style={`color: ${project.accent};`}>↗</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </header>
+
+    <!-- 在线交互演示 -->
+    <section class="mt-8">
+      <div class="font-mono-hud text-[11.5px] text-[var(--ink-dim)] mb-3">
+        [在线演示 · 点击按钮模拟运行状态]
+      </div>
+      <ProjectDemo slug={project.slug} accent={project.accent} />
+    </section>
+
+    <!-- 核心要点 -->
+    <section class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+      {
+        project.metrics.map((m) => (
+          <div class="p-4 rounded bg-[#141514] border border-[var(--line-subtle)]">
+            <div class="font-mono-hud text-[11px] text-[var(--ink-dim)]">
+              [{m.label}]
+            </div>
+            <div class="mt-1.5 text-[14px] font-medium text-[#fcf8ef]">{m.value}</div>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- 实现拆解 -->
+    <section class="mt-9 space-y-5">
+      <div class="font-mono-hud text-[11.5px] text-[var(--ink-dim)]">
+        [实现细节]
+      </div>
+      {
+        project.highlights.map((item) => (
+          <div class="hw-card p-5" style={`--branch-accent: ${project.accent};`}>
+            <div class="font-mono-hud text-[11.5px]" style={`color: ${project.accent};`}>
+              [{item.code}]
+            </div>
+            <h2 class="mt-1.5 mb-2 text-[17px] font-semibold text-[#fcf8ef]">{item.title}</h2>
+            <p class="m-0 text-[13.8px] leading-[1.78] text-[#dfdcd3]">{item.summary}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- 已知边界 -->
+    <section class="mt-8 p-5 rounded bg-[#131413] border border-[var(--line-subtle)]">
+      <div class="font-mono-hud text-[11.5px] text-[var(--ink-dim)] mb-2.5">
+        [已知限制与边界]
+      </div>
+      <ul class="m-0 pl-4 space-y-2 text-[13.5px] leading-[1.72] text-[#d6d3ca]">
+        {project.boundaries.map((line) => <li>{line}</li>)}
+      </ul>
+    </section>
+
+    <!-- 下一张卡带切换 -->
+    <section class="mt-10 pt-7 border-t border-[var(--line-subtle)]">
+      <a
+        href={`/projects/${nextProject.slug}`}
+        class="hw-card group flex flex-wrap items-center justify-between gap-4 p-5 no-underline text-inherit"
+        style={`--branch-accent: ${nextProject.accent};`}
+      >
+        <div>
+          <div class="font-mono-hud text-[11.5px] text-[var(--ink-dim)]">
+            [{nextProject.index}] {nextProject.categoryLabel}
+          </div>
+          <div class="mt-1.5 flex items-baseline gap-3 flex-wrap">
+            <span class="font-display-serif text-[34px] leading-none text-[#fcf8ef] phosphor-text">
+              {nextProject.name}
+            </span>
+            <span class="text-[13px] text-[var(--ink-dim)]">{nextProject.subtitle}</span>
+          </div>
+        </div>
+        <span
+          class="font-mono-hud text-[12px] transition-transform duration-200 group-hover:translate-x-1.5"
+          style={`color: ${nextProject.accent};`}
+        >
+          换下一张卡 [→]
+        </span>
+      </a>
+    </section>
+  </article>
+
+  <ProgressRuler accent={project.accent} label="阅读进度" />
+</CrtLayout>

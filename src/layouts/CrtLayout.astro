@@ -1,0 +1,383 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { IDENTITY } from '@/data/profile';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeNav?: 'deck' | 'projects' | 'profile' | 'lab';
+  defaultBranch?: string;
+  defaultBranchColor?: string;
+  defaultCaptionTop?: string;
+  defaultCaptionMain?: string;
+  deskMode?: boolean;
+}
+
+const {
+  title = IDENTITY.brand,
+  description = 'Oneadto 个人网站 — 复古卡带交互桌面与工程作品集',
+  activeNav = 'deck',
+  defaultBranch = '待机',
+  defaultBranchColor = '#e5b92a',
+  defaultCaptionTop = '',
+  defaultCaptionMain = '拖入卡带即可启动',
+  deskMode = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+    <script is:inline>
+      (function () {
+        const applyPrefs = () => {
+          try {
+            if (localStorage.getItem('oneadto:sound') === '0') {
+              document.documentElement.dataset.sound = '0';
+            } else {
+              document.documentElement.dataset.sound = '1';
+            }
+          } catch (_) {}
+        };
+        applyPrefs();
+        document.addEventListener('astro:after-swap', applyPrefs);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="crt-screen-grid" aria-hidden="true"></div>
+    <div class="crt-edge-fade-top" aria-hidden="true"></div>
+    <div class="crt-edge-fade-bottom" aria-hidden="true"></div>
+
+    <!-- 顶部硬件状态栏 -->
+    <header class="hud-top phosphor-text" transition:persist="hud-top">
+      <div class="flex items-center gap-4 sm:gap-5">
+        <a
+          href="/"
+          class="vcr-link"
+          data-nav-key="deck"
+          aria-current={activeNav === 'deck' ? 'page' : undefined}
+        >
+          主机
+        </a>
+        <span class="hud-desktop-only inline-flex items-center gap-2 text-[var(--ink-dim)]">
+          <span class="hw-led" aria-hidden="true"></span>
+          <span id="hud-tape-counter" class="font-mono-hud text-[var(--ink)]">00:00:00</span>
+        </span>
+      </div>
+
+      <!-- 中央标识：复古极简显像管几何徽标（O 框 + 1 信号柱 + 复古红指示点） -->
+      <a href="/" class="group flex items-center justify-center gap-1.5 sm:gap-2 leading-none no-underline" aria-label="Oneadto 首页">
+        <svg
+          viewBox="0 0 32 24"
+          class="w-[21px] h-[16px] sm:w-[27px] sm:h-[20px] shrink-0 transition-transform duration-200 group-hover:scale-105"
+          aria-hidden="true"
+        >
+          <rect
+            x="2"
+            y="2.5"
+            width="28"
+            height="19"
+            rx="4.8"
+            fill="none"
+            stroke="#ece9e1"
+            stroke-width="2.2"
+          />
+          <rect x="14.6" y="6.8" width="2.8" height="10.4" rx="0.8" fill="#ece9e1" />
+          <circle cx="23.5" cy="8.2" r="2" fill="#ff4d3d" />
+        </svg>
+        <span class="font-display-serif text-[18px] sm:text-[24px] tracking-tight text-[#fcf8ef] group-hover:text-white transition-colors">
+          {IDENTITY.brand}
+        </span>
+      </a>
+
+      <!-- 右侧中文导航 -->
+      <nav class="flex items-center justify-end gap-2.5 sm:gap-6" aria-label="主导航">
+        <a
+          href="/projects"
+          class="vcr-link"
+          data-nav-key="projects"
+          aria-current={activeNav === 'projects' ? 'page' : undefined}
+        >
+          作品
+        </a>
+        <a
+          href="/profile"
+          class="vcr-link"
+          data-nav-key="profile"
+          aria-current={activeNav === 'profile' ? 'page' : undefined}
+        >
+          关于
+        </a>
+        <a
+          href="/lab"
+          class="vcr-link"
+          data-nav-key="lab"
+          aria-current={activeNav === 'lab' ? 'page' : undefined}
+        >
+          LAB
+        </a>
+      </nav>
+    </header>
+
+    <!-- 页面主内容 -->
+    <main
+      class={`screen-content ${deskMode ? 'desk-mode-main' : ''}`}
+      data-page-nav={activeNav}
+      data-default-branch={defaultBranch}
+      data-default-branch-color={defaultBranchColor}
+      data-default-caption-top={defaultCaptionTop}
+      data-default-caption-main={defaultCaptionMain}
+    >
+      <slot />
+    </main>
+
+    <!-- 底部硬件状态栏（仅保留时钟与音效开关） -->
+    <footer class="hud-bottom phosphor-text" transition:persist="hud-bottom">
+      <div class="flex items-center gap-4">
+        <span id="hud-clock" class="hud-desktop-only font-mono-hud text-[var(--ink-dim)] whitespace-nowrap">
+          --:--
+        </span>
+        <button id="toggle-sound" type="button" class="vcr-link text-[11.5px] sm:text-[12px]">
+          音效 [开]
+        </button>
+      </div>
+
+      <!-- 中央槽位字幕（支持单行极简模式） -->
+      <div class="caption-slot hud-desktop-only" aria-live="polite">
+        <div id="hud-caption-top-wrap" class={defaultCaptionTop ? 'overflow-hidden' : 'hidden'}>
+          <div
+            id="hud-caption-top"
+            class="caption-line font-mono-hud text-[10.5px] tracking-[0.08em] text-[var(--ink-dim)]"
+          >
+            {defaultCaptionTop ? `[${defaultCaptionTop}]` : ''}
+          </div>
+        </div>
+        <div class="overflow-hidden">
+          <div
+            id="hud-caption-main"
+            class="caption-line font-mono-hud text-[12.5px] text-[var(--ink)] tracking-[0.04em] truncate max-w-[44vw]"
+          >
+            {defaultCaptionMain}
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧当前状态与联系邮箱 -->
+      <div class="flex items-center justify-end gap-3.5 sm:gap-5">
+        <span class="hud-desktop-only inline-flex items-center gap-1.5 text-[11.5px] text-[var(--ink-dim)] whitespace-nowrap">
+          <span
+            id="hud-branch-dot"
+            class="inline-block w-2 h-2 rounded-full transition-colors duration-300"
+            style={`background: ${defaultBranchColor};`}
+          ></span>
+          <span id="hud-branch-name" class="text-[var(--ink)]">{defaultBranch}</span>
+        </span>
+        <button
+          id="copy-email-btn"
+          type="button"
+          class="vcr-link"
+          data-email={IDENTITY.email}
+          title={`复制邮箱 ${IDENTITY.email}`}
+        >
+          联系邮箱
+        </button>
+      </div>
+    </footer>
+
+    <!-- CRT 硬件氛围层 -->
+    <div class="crt-beam-wrap" aria-hidden="true">
+      <div class="crt-beam"></div>
+    </div>
+    <div class="crt-scanlines" aria-hidden="true"></div>
+    <div class="crt-glass" aria-hidden="true"></div>
+    <div class="crt-frame" aria-hidden="true"></div>
+    <div class="crt-chassis-rim" aria-hidden="true"></div>
+
+    <script>
+      import { playSound } from '@/lib/sound';
+
+      declare global {
+        interface Window {
+          __oneadtoHudBooted?: boolean;
+          __oneadtoSessionStart?: number;
+        }
+      }
+
+      function updateSoundLabel() {
+        const soundBtn = document.getElementById('toggle-sound');
+        if (soundBtn) {
+          soundBtn.textContent =
+            document.documentElement.dataset.sound === '0' ? '音效 [关]' : '音效 [开]';
+        }
+      }
+
+      let lastCaptionKey = '';
+      let swapTimer: number | undefined;
+
+      function setHudCaption(top: string, main: string, branch?: string, color?: string) {
+        const key = `${top}|${main}|${branch ?? ''}`;
+        if (key === lastCaptionKey) return;
+        lastCaptionKey = key;
+
+        const topWrap = document.getElementById('hud-caption-top-wrap');
+        const topEl = document.getElementById('hud-caption-top');
+        const mainEl = document.getElementById('hud-caption-main');
+        const branchEl = document.getElementById('hud-branch-name');
+        const dotEl = document.getElementById('hud-branch-dot');
+
+        if (branchEl && branch) branchEl.textContent = branch;
+        if (dotEl && color) dotEl.style.background = color;
+
+        if (!mainEl) return;
+        window.clearTimeout(swapTimer);
+        topEl?.classList.add('swapping');
+        mainEl.classList.add('swapping');
+
+        swapTimer = window.setTimeout(() => {
+          if (topWrap && topEl) {
+            if (top) {
+              topWrap.classList.remove('hidden');
+              topEl.textContent = `[${top}]`;
+            } else {
+              topWrap.classList.add('hidden');
+              topEl.textContent = '';
+            }
+          }
+          mainEl.textContent = main;
+          topEl?.classList.remove('swapping');
+          mainEl.classList.remove('swapping');
+        }, 110);
+      }
+
+      function syncRouteHud() {
+        const main = document.querySelector('main.screen-content') as HTMLElement | null;
+        if (!main) return;
+        const activeNav = main.dataset.pageNav || 'deck';
+        document.querySelectorAll<HTMLAnchorElement>('[data-nav-key]').forEach((link) => {
+          if (link.dataset.navKey === activeNav) {
+            link.setAttribute('aria-current', 'page');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+
+        setHudCaption(
+          main.dataset.defaultCaptionTop || '',
+          main.dataset.defaultCaptionMain || 'Oneadto',
+          main.dataset.defaultBranch || '待机',
+          main.dataset.defaultBranchColor || '#ece9e1'
+        );
+        updateSoundLabel();
+      }
+
+      function bootHudOnce() {
+        if (window.__oneadtoHudBooted) return;
+        window.__oneadtoHudBooted = true;
+        window.__oneadtoSessionStart = Date.now();
+
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const tick = () => {
+          const counterEl = document.getElementById('hud-tape-counter');
+          if (counterEl && window.__oneadtoSessionStart) {
+            const elapsed = Math.floor((Date.now() - window.__oneadtoSessionStart) / 1000);
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            counterEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+          }
+          const clockEl = document.getElementById('hud-clock');
+          if (clockEl) {
+            const now = new Date();
+            clockEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+          }
+        };
+        tick();
+        window.setInterval(tick, 1000);
+
+        let lastHovered: Element | null = null;
+        document.addEventListener(
+          'mouseover',
+          (event) => {
+            const el = (event.target as HTMLElement | null)?.closest(
+              'a.vcr-link, button.vcr-link, a.hw-card, .core-btn, .project-node-mob'
+            );
+            if (!el) {
+              lastHovered = null;
+              return;
+            }
+            if (el !== lastHovered) {
+              lastHovered = el;
+              playSound('hover');
+            }
+          },
+          { passive: true }
+        );
+
+        document.addEventListener('click', async (event) => {
+          const el = event.target as HTMLElement | null;
+          const btn = el?.closest('button');
+
+          if (btn?.id === 'toggle-sound') {
+            const next = document.documentElement.dataset.sound === '0' ? '1' : '0';
+            document.documentElement.dataset.sound = next;
+            try {
+              localStorage.setItem('oneadto:sound', next);
+            } catch (_) {}
+            updateSoundLabel();
+            if (next === '1') playSound('confirm');
+            return;
+          }
+
+          if (btn?.id === 'copy-email-btn') {
+            const email = btn.dataset.email || 'oneadto@foxmail.com';
+            const prev = btn.textContent || '联系邮箱';
+            playSound('confirm');
+            try {
+              await navigator.clipboard.writeText(email);
+              btn.textContent = '已复制 [✓]';
+            } catch (_) {
+              window.location.href = `mailto:${email}`;
+              btn.textContent = '打开邮件 [↗]';
+            }
+            window.setTimeout(() => {
+              btn.textContent = prev;
+            }, 1800);
+            return;
+          }
+
+          const interactive = el?.closest('a[href], button');
+          if (
+            interactive &&
+            !interactive.closest('[data-project-demo]') &&
+            !interactive.closest('#lab-room-stage')
+          ) {
+            playSound('click');
+          }
+        });
+
+        window.addEventListener('oneadto:hud-caption', ((e: CustomEvent) => {
+          const d = e.detail || {};
+          setHudCaption(d.top ?? '', d.main ?? '', d.branch, d.color);
+        }) as EventListener);
+      }
+
+      bootHudOnce();
+      syncRouteHud();
+      document.addEventListener('astro:page-load', syncRouteHud);
+    </script>
+  </body>
+</html>

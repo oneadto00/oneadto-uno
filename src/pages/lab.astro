@@ -1,0 +1,892 @@
+---
+import CrtLayout from '@/layouts/CrtLayout.astro';
+import { IDENTITY } from '@/data/profile';
+---
+
+<CrtLayout
+  title="Oneadto"
+  activeNav="lab"
+  deskMode={true}
+  defaultBranch="LAB"
+  defaultBranchColor="#c084fc"
+  defaultCaptionTop=""
+  defaultCaptionMain="04 · LAB"
+>
+  <section
+    id="lab-room-stage"
+    class="lab-stage relative flex-1 w-full overflow-hidden select-none rounded-lg"
+    aria-label="LAB 3D 桌面与可互动电脑"
+  >
+    <!-- Three.js 3D 暗室电脑桌画布（仅 LAB 路由按需加载） -->
+    <canvas id="lab-3d-canvas" class="block w-full h-full"></canvas>
+
+    <!-- 3D 矩阵实时投影贴合显示器边框的交互式桌面系统 (960 × 540) -->
+    <div id="lab-os" class="lab-os" aria-label="电脑屏幕桌面">
+      <!-- 动态渐变波纹壁纸 -->
+      <div class="os-wallpaper" aria-hidden="true">
+        <div class="os-bloom os-bloom-a"></div>
+        <div class="os-bloom os-bloom-b"></div>
+      </div>
+
+      <!-- 虚拟桌面主区 -->
+      <div class="os-desktop">
+        <!-- 左侧桌面图标栏 -->
+        <div class="os-icons">
+          <button type="button" id="os-icon-game" class="os-icon is-featured">
+            <span class="os-icon-glyph os-glyph-game" aria-hidden="true">
+              <svg viewBox="0 0 32 32" class="w-6 h-6">
+                <rect x="4" y="6" width="24" height="20" rx="3" fill="#e5b92a" stroke="#fae06b" stroke-width="1.5" />
+                <rect x="8" y="10" width="16" height="10" rx="1.5" fill="#141820" />
+                <circle cx="13" cy="15" r="2" fill="#daff78" />
+                <rect x="17" y="14" width="5" height="2" fill="#22d3ee" />
+              </svg>
+            </span>
+            <span class="os-icon-name">GAME.EXE</span>
+            <span class="os-icon-sub">小游戏入口</span>
+          </button>
+
+          <a
+            id="os-icon-github"
+            href={IDENTITY.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="os-icon no-underline"
+          >
+            <span class="os-icon-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32" class="w-6 h-6">
+                <rect x="4" y="4" width="24" height="24" rx="5" fill="#161b22" stroke="#c084fc" stroke-width="1.5" />
+                <path
+                  d="M16 9.5a6.5 6.5 0 0 0-2.05 12.67c.33.06.45-.14.45-.31v-1.15c-1.82.4-2.2-.88-2.2-.88-.3-.76-.73-.96-.73-.96-.6-.4.04-.4.04-.4.66.05 1 .68 1 .68.59 1 1.54.72 1.92.55.06-.43.23-.72.42-.88-1.45-.16-2.98-.73-2.98-3.23 0-.72.25-1.3.68-1.76-.07-.16-.3-.83.06-1.73 0 0 .55-.18 1.8.67a6.3 6.3 0 0 1 3.28 0c1.25-.85 1.8-.67 1.8-.67.36.9.13 1.57.06 1.73.43.46.68 1.04.68 1.76 0 2.51-1.53 3.07-2.99 3.23.24.2.45.6.45 1.22v1.8c0 .18.12.38.45.31A6.5 6.5 0 0 0 16 9.5Z"
+                  fill="#f8fafc"
+                />
+              </svg>
+            </span>
+            <span class="os-icon-name">GitHub</span>
+            <span class="os-icon-sub">oneadto00</span>
+          </a>
+
+          <button type="button" id="os-icon-mail" class="os-icon">
+            <span class="os-icon-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32" class="w-6 h-6">
+                <rect x="4" y="7" width="24" height="18" rx="2.5" fill="#132238" stroke="#22d3ee" stroke-width="1.5" />
+                <path d="M5.5 9.5 16 17.5 26.5 9.5" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="os-icon-name">Mail</span>
+            <span class="os-icon-sub">快捷发信</span>
+          </button>
+
+          <button type="button" id="os-icon-note" class="os-icon">
+            <span class="os-icon-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32" class="w-6 h-6">
+                <rect x="6" y="4" width="20" height="24" rx="2" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" />
+                <line x1="10" y1="11" x2="22" y2="11" stroke="#cbd5e1" stroke-width="1.5" />
+                <line x1="10" y1="16" x2="20" y2="16" stroke="#94a3b8" stroke-width="1.5" />
+                <line x1="10" y1="21" x2="17" y2="21" stroke="#94a3b8" stroke-width="1.5" />
+              </svg>
+            </span>
+            <span class="os-icon-name">NOTE.TXT</span>
+            <span class="os-icon-sub">机器说明</span>
+          </button>
+
+          <button type="button" id="os-icon-exit" class="os-icon">
+            <span class="os-icon-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32" class="w-6 h-6">
+                <circle cx="16" cy="16" r="10" fill="none" stroke="#ff4d3d" stroke-width="2" />
+                <line x1="16" y1="8" x2="16" y2="16" stroke="#ff4d3d" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="os-icon-name">离开电脑</span>
+            <span class="os-icon-sub">拉远视角</span>
+          </button>
+        </div>
+
+        <!-- 浮动小游戏启动舱窗口（预留独立挂载口，后续直接接入小游戏内容） -->
+        <div id="os-game-win" class="os-window is-open" role="dialog" aria-label="小游戏运行舱">
+          <div class="os-win-bar">
+            <div class="flex items-center gap-2">
+              <span class="os-dot bg-[#ff5f56]"></span>
+              <span class="os-dot bg-[#ffbd2e]"></span>
+              <span class="os-dot bg-[#27c93f]"></span>
+              <span class="ml-2 font-mono-hud text-[12px] text-[#e2e8f0]">GAME.EXE — 小游戏启动舱</span>
+            </div>
+            <button type="button" id="os-close-game" class="os-win-close" aria-label="关闭窗口">
+              ×
+            </button>
+          </div>
+
+          <div class="os-win-body">
+            <!-- 小游戏启动与过渡舱 -->
+            <div id="lab-game-slot" class="game-bay">
+              <div id="game-standby-view" class="game-bay-inner">
+                <div class="font-pixel text-[11px] tracking-[0.2em] text-[#daff78]">
+                  ARCADE RUNTIME // READY
+                </div>
+                <div class="mt-3 font-display-serif text-[40px] leading-none text-[#fcf8ef]">
+                  红号大冒险
+                </div>
+                <div class="mt-6 flex items-center justify-center gap-3">
+                  <button type="button" id="os-boot-game-btn" class="os-primary-btn">
+                    启动
+                  </button>
+                </div>
+              </div>
+
+              <!-- 进度条与全屏过渡画面 -->
+              <div id="game-boot-view" class="game-bay-inner hidden">
+                <div class="font-pixel text-[12px] text-[#fb7185] tracking-[0.18em]">
+                  LOADING // 红号大冒险
+                </div>
+                <div class="mt-3 font-mono-hud text-[13px] text-[#daff78]" id="game-boot-log">
+                  &gt; 正在烘焙 16-bit 像素图集...
+                </div>
+                <div class="mt-4 w-[280px] h-2.5 rounded bg-[#0b101a] border border-white/15 overflow-hidden">
+                  <div id="game-boot-bar" class="h-full w-0 bg-[#daff78] transition-all duration-300"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 快捷发信程序窗口 -->
+        <div id="os-mail-win" class="os-window os-window-mail" role="dialog" aria-label="Mail 快捷发信">
+          <div class="os-win-bar">
+            <div class="flex items-center gap-2">
+              <span class="os-dot bg-[#ff5f56]"></span>
+              <span class="os-dot bg-[#ffbd2e]"></span>
+              <span class="os-dot bg-[#27c93f]"></span>
+              <span class="ml-2 font-mono-hud text-[12px] text-[#e2e8f0]">Mail — 发送邮件</span>
+            </div>
+            <button type="button" id="os-close-mail" class="os-win-close" aria-label="关闭邮件窗口">
+              ×
+            </button>
+          </div>
+          <form id="os-mail-form" class="os-win-body p-5 gap-3 text-left" data-email={IDENTITY.email}>
+            <div class="flex items-center justify-between gap-3 px-3 py-2 rounded bg-[#070b14] border border-white/10">
+              <div class="font-mono-hud text-[12px] text-[#94a3b8]">
+                收件人：<span class="text-[#22d3ee]">{IDENTITY.email}</span>
+              </div>
+              <button type="button" id="os-mail-copy" class="os-ghost-btn text-[11px] py-1 px-2.5">
+                复制邮箱
+              </button>
+            </div>
+
+            <label class="flex flex-col gap-1">
+              <span class="font-mono-hud text-[11px] text-[#94a3b8]">邮件主题（可选）</span>
+              <input
+                id="os-mail-subject"
+                type="text"
+                placeholder="来自 Oneadto LAB 的消息"
+                class="os-mail-input"
+              />
+            </label>
+
+            <label class="flex flex-col gap-1 flex-1">
+              <span class="font-mono-hud text-[11px] text-[#94a3b8]">邮件正文（可选）</span>
+              <textarea
+                id="os-mail-body"
+                rows="5"
+                placeholder="在这里写下内容，或留空直接点击下方按钮唤起邮件客户端..."
+                class="os-mail-input os-mail-textarea"
+              ></textarea>
+            </label>
+
+            <div class="flex items-center justify-between gap-3 pt-1">
+              <span id="os-mail-status" class="font-mono-hud text-[11px] text-[#94a3b8]">
+                点击将唤起系统默认邮件客户端
+              </span>
+              <button type="submit" id="os-mail-send" class="os-primary-btn">
+                ▶ 发送邮件
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 机器说明小记事本窗口 -->
+        <div id="os-note-win" class="os-window os-window-note" role="dialog" aria-label="机器说明">
+          <div class="os-win-bar">
+            <span class="font-mono-hud text-[12px] text-[#e2e8f0]">NOTE.TXT</span>
+            <button type="button" id="os-close-note" class="os-win-close" aria-label="关闭说明">
+              ×
+            </button>
+          </div>
+          <div class="os-win-body text-left p-5 space-y-2.5 text-[13.5px] leading-[1.7] text-[#cbd5e1]">
+            <div class="font-mono-hud text-[12px] text-[#daff78]">Oneadto LAB // Workbench</div>
+            <p class="m-0">· 暗室工作台用 Three.js 实时绘制，只在 LAB 页按需加载，不影响主站打开速度。</p>
+            <p class="m-0">· 屏幕内容通过 3D 坐标投影贴合真实 HTML 界面，拉近后文字和小游戏画布依然锐利。</p>
+            <p class="m-0">· 退回工作台后，点击屏幕上方的顶置台灯可开关照亮左右两侧的暖光。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部任务栏 -->
+      <div class="os-taskbar">
+        <div class="flex items-center gap-2">
+          <span class="os-start-pill font-pixel">ONEADTO OS</span>
+          <button type="button" id="os-task-game" class="os-task-btn">GAME.EXE</button>
+          <a
+            id="os-task-github"
+            href={IDENTITY.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="os-task-btn no-underline"
+          >
+            GitHub ↗
+          </a>
+          <button type="button" id="os-task-mail" class="os-task-btn">Mail</button>
+        </div>
+        <div class="flex items-center gap-3 font-mono-hud text-[11px] text-[#cbd5e1]">
+          <span id="os-clock">14:30</span>
+          <button type="button" id="os-task-exit" class="os-exit-pill">离开电脑 [ESC]</button>
+        </div>
+      </div>
+
+      <!-- 极微弱显示器内部扫描线 -->
+      <div class="os-scanline" aria-hidden="true"></div>
+    </div>
+
+    <!-- 3D 场景状态提示与快捷控制 -->
+    <div id="lab-room-hint" class="room-hint font-mono-hud">
+      <span id="room-hint-dot" class="inline-block w-2 h-2 rounded-full bg-[#38bdf8]"></span>
+      <span id="room-hint-text">点击电脑屏幕进入互动 · 点击屏幕上方挂灯开关灯光</span>
+    </div>
+
+    <div class="room-controls font-mono-hud">
+      <button type="button" id="btn-toggle-lamp" class="room-ctrl-btn">
+        顶灯 [开]
+      </button>
+      <button type="button" id="btn-focus-pc" class="room-ctrl-btn is-accent">
+        进入电脑 [↵]
+      </button>
+    </div>
+  </section>
+</CrtLayout>
+
+<script>
+  import { mountLabDeskScene, type LabSceneController } from '@/lib/labDeskScene';
+  import { playSound } from '@/lib/sound';
+
+  function initLabRoom() {
+    const stage = document.getElementById('lab-room-stage');
+    const canvas = document.getElementById('lab-3d-canvas') as HTMLCanvasElement | null;
+    const osOverlay = document.getElementById('lab-os');
+    if (!stage || !canvas || !osOverlay) return;
+
+    const hintText = document.getElementById('room-hint-text');
+    const hintDot = document.getElementById('room-hint-dot');
+    const focusBtn = document.getElementById('btn-focus-pc');
+    const lampBtn = document.getElementById('btn-toggle-lamp');
+    const osClock = document.getElementById('os-clock');
+
+    const gameWin = document.getElementById('os-game-win');
+    const mailWin = document.getElementById('os-mail-win');
+    const noteWin = document.getElementById('os-note-win');
+    const mailForm = document.getElementById('os-mail-form') as HTMLFormElement | null;
+    const mailSubject = document.getElementById('os-mail-subject') as HTMLInputElement | null;
+    const mailBody = document.getElementById('os-mail-body') as HTMLTextAreaElement | null;
+    const mailCopyBtn = document.getElementById('os-mail-copy');
+    const mailStatus = document.getElementById('os-mail-status');
+    const standbyView = document.getElementById('game-standby-view');
+    const bootView = document.getElementById('game-boot-view');
+    const bootLog = document.getElementById('game-boot-log');
+    const bootBar = document.getElementById('game-boot-bar');
+
+    const timers: number[] = [];
+
+    const updateOsClock = () => {
+      if (!osClock) return;
+      const d = new Date();
+      osClock.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    };
+    updateOsClock();
+    const clockInterval = window.setInterval(updateOsClock, 10000);
+
+    const controller: LabSceneController = mountLabDeskScene({
+      canvas,
+      container: stage,
+      osOverlay,
+      onFocusChange: (isFocused) => {
+        playSound(isFocused ? 'zoomIn' : 'zoomOut');
+        if (focusBtn) {
+          focusBtn.textContent = isFocused ? '离开电脑 [ESC]' : '进入电脑 [↵]';
+        }
+        if (hintText && hintDot) {
+          if (isFocused) {
+            hintText.textContent = '已聚焦电脑屏幕 · 点击屏幕外或按 ESC 拉远视角';
+            hintDot.style.background = '#daff78';
+          } else {
+            hintText.textContent = '点击电脑屏幕进入互动 · 点击屏幕上方挂灯开关灯光';
+            hintDot.style.background = '#38bdf8';
+          }
+        }
+      },
+      onLampChange: (isOn) => {
+        playSound('switch');
+        if (lampBtn) lampBtn.textContent = isOn ? '顶灯 [开]' : '顶灯 [关]';
+      },
+      onHoverTarget: (target) => {
+        if (target) playSound('hover');
+        if (!hintText || !hintDot || controller.isFocused()) return;
+        if (target === 'monitor') {
+          hintText.textContent = '点击显示器，拉近并进入电脑桌面';
+          hintDot.style.background = '#daff78';
+        } else if (target === 'lamp') {
+          hintText.textContent = '点击屏幕上方顶灯，开关左右桌面暖光';
+          hintDot.style.background = '#facc15';
+        } else {
+          hintText.textContent = '点击电脑屏幕进入互动 · 点击屏幕上方挂灯开关灯光';
+          hintDot.style.background = '#38bdf8';
+        }
+      },
+    });
+
+    focusBtn?.addEventListener('click', () => {
+      if (controller.isFocused()) controller.unfocusMonitor();
+      else controller.focusMonitor();
+    });
+    lampBtn?.addEventListener('click', () => {
+      controller.toggleLamp();
+    });
+
+    const openGameWin = () => {
+      playSound('action');
+      gameWin?.classList.add('is-open');
+      mailWin?.classList.remove('is-open');
+      noteWin?.classList.remove('is-open');
+    };
+    const openMailWin = () => {
+      playSound('action');
+      mailWin?.classList.add('is-open');
+      gameWin?.classList.remove('is-open');
+      noteWin?.classList.remove('is-open');
+    };
+    const openNoteWin = () => {
+      playSound('action');
+      noteWin?.classList.add('is-open');
+    };
+
+    document.querySelectorAll('.os-icon').forEach((icon) => {
+      icon.addEventListener('mouseenter', () => playSound('hover'));
+    });
+
+    document.getElementById('os-icon-game')?.addEventListener('click', openGameWin);
+    document.getElementById('os-task-game')?.addEventListener('click', openGameWin);
+    document.getElementById('os-close-game')?.addEventListener('click', () => {
+      playSound('click');
+      gameWin?.classList.remove('is-open');
+    });
+
+    document.getElementById('os-icon-github')?.addEventListener('click', () => playSound('confirm'));
+    document.getElementById('os-task-github')?.addEventListener('click', () => playSound('confirm'));
+
+    document.getElementById('os-icon-mail')?.addEventListener('click', openMailWin);
+    document.getElementById('os-task-mail')?.addEventListener('click', openMailWin);
+    document.getElementById('os-close-mail')?.addEventListener('click', () => {
+      playSound('click');
+      mailWin?.classList.remove('is-open');
+    });
+
+    mailCopyBtn?.addEventListener('click', async () => {
+      const email = mailForm?.dataset.email || 'oneadto@foxmail.com';
+      try {
+        await navigator.clipboard.writeText(email);
+        playSound('confirm');
+        mailCopyBtn.textContent = '已复制';
+        if (mailStatus) mailStatus.textContent = `已复制 ${email}`;
+        timers.push(
+          window.setTimeout(() => {
+            mailCopyBtn.textContent = '复制邮箱';
+          }, 1800)
+        );
+      } catch {
+        playSound('alert');
+      }
+    });
+
+    mailForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = mailForm.dataset.email || 'oneadto@foxmail.com';
+      const subject = mailSubject?.value.trim() || '';
+      const body = mailBody?.value.trim() || '';
+      const params: string[] = [];
+      if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+      if (body) params.push(`body=${encodeURIComponent(body)}`);
+      const href = params.length > 0 ? `mailto:${email}?${params.join('&')}` : `mailto:${email}`;
+      playSound('confirm');
+      if (mailStatus) mailStatus.textContent = `正在唤起邮件客户端 → ${email}`;
+      const a = document.createElement('a');
+      a.href = href;
+      a.click();
+    });
+
+    document.getElementById('os-icon-note')?.addEventListener('click', openNoteWin);
+    document.getElementById('os-close-note')?.addEventListener('click', () => {
+      playSound('click');
+      noteWin?.classList.remove('is-open');
+    });
+
+    document.getElementById('os-icon-exit')?.addEventListener('click', () => controller.unfocusMonitor());
+    document.getElementById('os-task-exit')?.addEventListener('click', () => controller.unfocusMonitor());
+
+    let activeGame: { destroy: () => void } | null = null;
+
+    const resetBootUi = () => {
+      bootView?.classList.add('hidden');
+      standbyView?.classList.remove('hidden');
+      if (bootBar) bootBar.style.width = '0%';
+    };
+
+    document.getElementById('os-boot-game-btn')?.addEventListener('click', () => {
+      playSound('insert');
+      timers.forEach((t) => window.clearTimeout(t));
+      standbyView?.classList.add('hidden');
+      bootView?.classList.remove('hidden');
+      if (bootBar) bootBar.style.width = '22%';
+      if (bootLog) bootLog.textContent = '> 正在烘焙 16-bit 像素精灵与地牢纹理...';
+
+      // 按需动态加载小游戏引擎，不影响全站与 LAB 首屏速度
+      const gameModulePromise = import('@/lib/survivor/redAdventure');
+
+      timers.push(
+        window.setTimeout(() => {
+          playSound('hover');
+          if (bootBar) bootBar.style.width = '68%';
+          if (bootLog) bootLog.textContent = '> 载入武器库与三选一潜能矩阵...';
+        }, 240)
+      );
+
+      timers.push(
+        window.setTimeout(async () => {
+          if (bootBar) bootBar.style.width = '100%';
+          if (bootLog) bootLog.textContent = '> 正在展开全屏视口并锁定操控...';
+          playSound('confirm');
+          try {
+            const mod = await gameModulePromise;
+            timers.push(
+              window.setTimeout(() => {
+                activeGame?.destroy();
+                activeGame = mod.launchRedAdventure({
+                  onExit: () => {
+                    activeGame = null;
+                    playSound('zoomOut');
+                    resetBootUi();
+                  },
+                });
+              }, 160)
+            );
+          } catch {
+            resetBootUi();
+          }
+        }, 560)
+      );
+    });
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.clearInterval(clockInterval);
+        timers.forEach((t) => window.clearTimeout(t));
+        activeGame?.destroy();
+        activeGame = null;
+        controller.dispose();
+      },
+      { once: true }
+    );
+  }
+
+  document.addEventListener('astro:page-load', initLabRoom);
+</script>
+
+<style>
+  .lab-stage {
+    min-height: 0;
+    height: 100%;
+    background: #06080e;
+  }
+
+  /* =========================================================
+     3D 屏幕实时投影的交互式 HTML 桌面 (960 × 540)
+     ========================================================= */
+  .lab-os {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 960px;
+    height: 540px;
+    transform-origin: center center;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #081226;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 12;
+    box-shadow: inset 0 0 0 1px rgba(147, 197, 253, 0.25);
+  }
+
+  .lab-os.is-live {
+    pointer-events: auto;
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.85),
+      0 0 0 2px rgba(96, 165, 250, 0.32);
+  }
+
+  .os-wallpaper {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 52% 48%, #153478 0%, #0a1630 58%, #050914 100%);
+    overflow: hidden;
+  }
+
+  .os-bloom {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(46px);
+    opacity: 0.72;
+  }
+
+  .os-bloom-a {
+    width: 440px;
+    height: 360px;
+    left: 28%;
+    top: 16%;
+    background: radial-gradient(circle, #38bdf8 0%, #2563eb 52%, transparent 74%);
+  }
+
+  .os-bloom-b {
+    width: 380px;
+    height: 320px;
+    right: 18%;
+    bottom: 12%;
+    background: radial-gradient(circle, #818cf8 0%, #1d4ed8 56%, transparent 76%);
+  }
+
+  .os-desktop {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: calc(100% - 42px);
+    padding: 16px 20px;
+  }
+
+  .os-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    width: 96px;
+  }
+
+  .os-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 6px;
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.36);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.16s ease;
+  }
+
+  .os-icon:hover {
+    background: rgba(56, 189, 248, 0.22);
+    border-color: rgba(125, 211, 252, 0.55);
+    transform: translateY(-1px);
+  }
+
+  .os-icon.is-featured {
+    border-color: rgba(218, 255, 120, 0.48);
+    background: rgba(218, 255, 120, 0.1);
+  }
+
+  .os-icon-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .os-icon-sub {
+    font-size: 10px;
+    color: rgba(226, 232, 240, 0.7);
+  }
+
+  /* 窗口样式 */
+  .os-window {
+    position: absolute;
+    left: 152px;
+    top: 44px;
+    width: 660px;
+    height: 392px;
+    border-radius: 8px;
+    background: rgba(11, 17, 30, 0.88);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.65);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .os-window.is-open {
+    display: flex;
+  }
+
+  .os-window-mail {
+    left: 196px;
+    top: 44px;
+    width: 560px;
+    height: 392px;
+    z-index: 5;
+  }
+
+  .os-mail-input {
+    width: 100%;
+    padding: 8px 11px;
+    border-radius: 5px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: #070b14;
+    color: #f8fafc;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    outline: none;
+    user-select: text;
+    transition: border-color 0.16s ease;
+  }
+
+  .os-mail-input:focus {
+    border-color: #22d3ee;
+  }
+
+  .os-mail-textarea {
+    flex: 1;
+    resize: none;
+    line-height: 1.6;
+  }
+
+  .os-window-note {
+    left: 240px;
+    top: 96px;
+    width: 470px;
+    height: auto;
+    z-index: 6;
+  }
+
+  .os-win-bar {
+    height: 36px;
+    padding: 0 12px;
+    background: rgba(20, 29, 48, 0.92);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .os-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .os-win-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .os-win-close:hover {
+    background: rgba(255, 77, 61, 0.25);
+    color: #fff;
+  }
+
+  .os-win-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-bay {
+    flex: 1;
+    margin: 14px;
+    border-radius: 6px;
+    border: 1px dashed rgba(218, 255, 120, 0.32);
+    background:
+      radial-gradient(rgba(218, 255, 120, 0.08) 1px, transparent 1px),
+      #070b14;
+    background-size: 20px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .game-bay-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .game-bay-inner.hidden {
+    display: none;
+  }
+
+  .os-primary-btn {
+    padding: 11px 30px;
+    border-radius: 5px;
+    border: 1px solid #daff78;
+    background: #daff78;
+    color: #0b111e;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+
+  .os-primary-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+  }
+
+  .os-ghost-btn {
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid rgba(226, 232, 240, 0.3);
+    background: transparent;
+    color: #e2e8f0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .os-ghost-btn:hover {
+    border-color: #fcf8ef;
+    color: #fff;
+  }
+
+  /* 任务栏 */
+  .os-taskbar {
+    position: relative;
+    z-index: 4;
+    height: 42px;
+    padding: 0 14px;
+    background: rgba(8, 13, 24, 0.9);
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .os-start-pill {
+    font-size: 10px;
+    color: #daff78;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(218, 255, 120, 0.35);
+    background: rgba(218, 255, 120, 0.1);
+  }
+
+  .os-task-btn {
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(30, 41, 59, 0.7);
+    color: #f1f5f9;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .os-exit-pill {
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 77, 61, 0.45);
+    background: rgba(255, 77, 61, 0.15);
+    color: #fecaca;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .os-exit-pill:hover {
+    background: rgba(255, 77, 61, 0.32);
+    color: #fff;
+  }
+
+  .os-scanline {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.12) 0px,
+      rgba(0, 0, 0, 0.12) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+
+  /* 3D 场景角落提示与快捷控制 */
+  .room-hint {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(8, 11, 18, 0.78);
+    border: 1px solid rgba(236, 233, 225, 0.16);
+    font-size: 11.5px;
+    color: #e2e8f0;
+    pointer-events: none;
+  }
+
+  .room-controls {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .room-ctrl-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(10, 14, 24, 0.85);
+    border: 1px solid rgba(236, 233, 225, 0.22);
+    color: #e2e8f0;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .room-ctrl-btn:hover {
+    border-color: #fcf8ef;
+    color: #fff;
+  }
+
+  .room-ctrl-btn.is-accent {
+    border-color: rgba(218, 255, 120, 0.55);
+    color: #daff78;
+  }
+
+  .room-ctrl-btn.is-accent:hover {
+    background: rgba(218, 255, 120, 0.16);
+  }
+
+  @media (max-width: 720px) {
+    .room-hint {
+      display: none;
+    }
+  }
+</style>
